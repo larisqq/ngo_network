@@ -1,0 +1,42 @@
+// src/types/models.ts
+interface Organisation {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  domains: string[];
+  socialMedia?: {
+    website?: string;
+    facebook?: string;
+    instagram?: string;
+  };
+  contact: {
+    email: string;
+    phone?: string;
+  };
+}
+
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  country: string; // 'RO' | 'MD' | 'UA' | 'BG' | 'HU' | 'RS'
+  domain: string ; // 'environment' | 'education' | 'well-being' | 'health' | 'community';
+  host: {
+    id: string;
+    name: string;
+    logo?: string;
+  };
+  partners?: Array<{
+    id: string;
+    name: string;
+    socialMedia?: {
+      instagram?: string;
+      facebook?: string;
+    };
+  }>;
+}
+
+export type { Organisation, Project };
