@@ -24,16 +24,18 @@ const ProjectProfilePage = () => {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const API_BASE_URL = 'http://localhost:5000'; // Înlocuiește cu domeniul real în producție
+
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/projects/${id}`);
+        const res = await fetch(`${API_BASE_URL}/api/projects/${id}`);
         const data = await res.json();
-        const mapped = {
+        const mapped: Project = {
           id: data._id,
           title: data.name,
           description: data.description,
-          infoPackUrl: data.infoPackUrl,
+          infoPackUrl: data.infoPackUrl ? `${API_BASE_URL}${data.infoPackUrl}` : undefined,
           startDate: data.startDate,
           endDate: data.endDate,
           deadline: data.deadline,

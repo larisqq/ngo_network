@@ -1,12 +1,13 @@
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-md bg-primary navbar-dark">
       <div className="container-fluid">
         {/* Partea stângă - Logo */}
-        <a className="navbar-brand me-auto" href="#">
+        <Link className="navbar-brand me-auto" to="/">
           ONG NETWORK
-        </a>
+        </Link>
 
         {/* Buton pentru mobil */}
         <button
@@ -25,30 +26,30 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarContent">
           <ul className="navbar-nav ms-auto"> {/* ms-auto = aliniere dreapta */}
             <li className="nav-item">
-              <a className="nav-link active" href="#">
+              <Link className="nav-link active" to="/">
                 HOME
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <Link className="nav-link" to="/projects">
                 OPPORTUNITIES
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <Link className="nav-link" to="/organisations">
                 ORGANISATIONS
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <Link className="nav-link" to="/about">
                 ABOUT ERASMUS+
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
       </div>
     </nav>
   );
-}
+};
 
 export default Navbar;

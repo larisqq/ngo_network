@@ -1,4 +1,6 @@
+// src/components/ProjectCard.tsx
 import { Card } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 interface Project {
   id: string;
@@ -6,8 +8,8 @@ interface Project {
   description: string;
   startDate: string;
   endDate: string;
-  country: string; // e.g., 'RO', 'MD'
-  domain: string; // e.g., 'education', 'well-being'
+  country: string;
+  domain: string;
   host: {
     id: string;
     name: string;
@@ -25,38 +27,40 @@ interface ProjectCardProps {
 
 const ProjectCard = ({ project }: ProjectCardProps) => {
   return (
-    <Card className="h-100 shadow-sm">
-      <Card.Body>
-        <Card.Title>{project.name}</Card.Title>
+    <Link to={`/projects/${project.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+      <Card className="h-100 shadow-sm">
+        <Card.Body>
+          <Card.Title>{project.name}</Card.Title>
 
-        <Card.Text className="text-muted">
-          <strong>Domain:</strong> {project.domain}
-        </Card.Text>
-
-        <Card.Text className="text-muted">
-          <strong>Period:</strong>{' '}
-          {new Date(project.startDate).toLocaleDateString()} – {new Date(project.endDate).toLocaleDateString()}
-        </Card.Text>
-
-        <Card.Text className="text-muted">
-          <strong>Country:</strong> {project.country}
-        </Card.Text>
-
-        <Card.Text>{project.description}</Card.Text>
-
-        {project.host && (
-          <Card.Text className="text-muted small">
-            <strong>Host organisation:</strong> {project.host.name}
+          <Card.Text className="text-muted">
+            <strong>Domain:</strong> {project.domain}
           </Card.Text>
-        )}
 
-        {project.partners && project.partners.length > 0 && (
-          <Card.Text className="text-muted small">
-            <strong>Partners:</strong> {project.partners.map(p => p.name).join(', ')}
+          <Card.Text className="text-muted">
+            <strong>Period:</strong>{' '}
+            {new Date(project.startDate).toLocaleDateString()} – {new Date(project.endDate).toLocaleDateString()}
           </Card.Text>
-        )}
-      </Card.Body>
-    </Card>
+
+          <Card.Text className="text-muted">
+            <strong>Country:</strong> {project.country}
+          </Card.Text>
+
+          <Card.Text>{project.description}</Card.Text>
+
+          {project.host && (
+            <Card.Text className="text-muted small">
+              <strong>Host organisation:</strong> {project.host.name}
+            </Card.Text>
+          )}
+
+          {project.partners && project.partners.length > 0 && (
+            <Card.Text className="text-muted small">
+              <strong>Partners:</strong> {project.partners.map(p => p.name).join(', ')}
+            </Card.Text>
+          )}
+        </Card.Body>
+      </Card>
+    </Link>
   );
 };
 
