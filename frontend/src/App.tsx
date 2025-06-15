@@ -5,6 +5,8 @@ import OrganisationsPage from './pages/OrganisationsPage';
 import ProjectsPage from './pages/ProjectsPage';
 import OrganisationProfile from './pages/OngProfile'; // pagină individuală ONG
 import ProjectProfilePage from './pages/ProjectProfilePage'; // pagină individuală proiect
+import AddProjectPage from './pages/AddProjectPage';
+
 
 import './App.css';
 
@@ -19,6 +21,8 @@ function App() {
           <Route path="/organisations/:id" element={<OrganisationProfile />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/projects/:id" element={<ProjectProfilePage />} />
+          <Route path="/add-project" element={<AddProjectPage />} />
+          
 
         </Routes>
       </div>

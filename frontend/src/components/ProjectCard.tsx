@@ -2,7 +2,7 @@ import { Card } from 'react-bootstrap';
 
 interface Project {
   id: string;
-  title: string;
+  name: string;
   description: string;
   startDate: string;
   endDate: string;
@@ -27,7 +27,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
   return (
     <Card className="h-100 shadow-sm">
       <Card.Body>
-        <Card.Title>{project.title}</Card.Title>
+        <Card.Title>{project.name}</Card.Title>
 
         <Card.Text className="text-muted">
           <strong>Domain:</strong> {project.domain}

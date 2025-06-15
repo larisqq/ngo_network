@@ -18,7 +18,7 @@ interface Organisation {
 
 interface Project {
   id: string;
-  title: string;
+  name: string;
   description: string;
   startDate: string;
   endDate: string;
