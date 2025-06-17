@@ -1,6 +1,6 @@
 // src/types/models.ts
 interface Organisation {
-  id: string;
+  _id: string;
   name: string;
   logo: string;
   description: string;
@@ -14,6 +14,7 @@ interface Organisation {
     email: string;
     phone?: string;
   };
+  projects?: Project[]; 
 }
 
 interface Project {

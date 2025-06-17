@@ -22,7 +22,7 @@ const ProjectsPage = () => {
         setHasMore(false);
       } else {
         setProjects(prev => {
-          const newProjects = data.filter(newP => !prev.some(p => p.id === newP.id));
+          const newProjects = data.filter(newP => !prev.some(p => p._id === newP._id));
           return [...prev, ...newProjects];
         });
       }
@@ -57,7 +57,7 @@ const ProjectsPage = () => {
       {projects.length > 0 ? (
         <div className="row">
           {projects.map(project => (
-            <div className="col-md-6 mb-4" key={project.id}>
+            <div className="col-md-6 mb-4" key={project._id}>
               <ProjectCard project={project} />
             </div>
           ))}

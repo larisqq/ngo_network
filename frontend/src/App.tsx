@@ -1,13 +1,16 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import HomePage from './pages/Home'; // dacă ai o pagină de tip landing/home
-import OrganisationsPage from './pages/OrganisationsPage';
+import HomePage from './pages/HomePage'; // dacă ai o pagină de tip landing/home
+import OrganisationsPage from './pages/Orgs';
 import ProjectsPage from './pages/ProjectsPage';
-import OrganisationProfile from './pages/OngProfile'; // pagină individuală ONG
+import OrganisationProfile from './pages/OrgProfile'; // pagină individuală ONG
 import ProjectProfilePage from './pages/ProjectProfilePage'; // pagină individuală proiect
 import AddProjectPage from './pages/AddProjectPage';
-
-
+import SignUpPage from './pages/SignUpPage';
+import LoginPage from './pages/LoginPage'; 
+import VerifyPage from './pages/VerifyPage'; // pagină pentru verificarea contului
+import Footer from './components/Footer'; // presupunând că ai un component Footer
+import EditProfile from './pages/EditProfilePage'; // pagină pentru editarea profilului utilizatorului
 import './App.css';
 
 function App() {
@@ -22,10 +25,18 @@ function App() {
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/projects/:id" element={<ProjectProfilePage />} />
           <Route path="/add-project" element={<AddProjectPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/verify" element={<VerifyPage />} />
+          <Route path="/edit-profile" element={<EditProfile />} />
+          
+
           
 
         </Routes>
       </div>
+      <Footer />
+
     </Router>
   );
 }

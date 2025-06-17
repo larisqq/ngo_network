@@ -1,17 +1,9 @@
 // src/pages/OrganisationsPage.tsx
 import { useState, useEffect } from 'react';
-import OrgCard from '../components/OrgCard';
+import OrganisationCard from '../components/OrganisationCard';
+import { Organisation } from '@/types/models';
 
-interface Organisation {
-  _id: string;
-  name: string;
-  logo?: string;
-  description?: string;
-  contact: {
-    email: string;
-    phone?: string;
-  };
-}
+
 
 const OrganisationsPage = () => {
   const [organisations, setOrganisations] = useState<Organisation[]>([]);
@@ -64,7 +56,7 @@ const OrganisationsPage = () => {
         <div className="row">
           {organisations.map((org) => (
             <div className="col-md-4 mb-4" key={org._id}>
-              <OrgCard organisation={org} />
+              <OrganisationCard organisation={org} />
             </div>
           ))}
         </div>

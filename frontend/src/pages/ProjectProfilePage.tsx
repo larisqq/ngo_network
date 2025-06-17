@@ -20,11 +20,12 @@ interface Project {
 }
 
 const ProjectProfilePage = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
+  console.log("Project ID from URL:", id); // asigură-te că vezi un ID real
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const API_BASE_URL = 'http://localhost:5000'; // Înlocuiește cu domeniul real în producție
+  const API_BASE_URL = 'http://localhost:5000'; 
 
   useEffect(() => {
     const fetchProject = async () => {

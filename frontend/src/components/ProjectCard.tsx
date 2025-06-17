@@ -1,25 +1,6 @@
-// src/components/ProjectCard.tsx
+import { Project } from '../types/models';
 import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-
-interface Project {
-  id: string;
-  name: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  country: string;
-  domain: string;
-  host: {
-    id: string;
-    name: string;
-    logo?: string;
-  };
-  partners?: Array<{
-    id: string;
-    name: string;
-  }>;
-}
 
 interface ProjectCardProps {
   project: Project;
@@ -27,7 +8,7 @@ interface ProjectCardProps {
 
 const ProjectCard = ({ project }: ProjectCardProps) => {
   return (
-    <Link to={`/projects/${project.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+    <Link to={`/projects/${project._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
       <Card className="h-100 shadow-sm">
         <Card.Body>
           <Card.Title>{project.name}</Card.Title>

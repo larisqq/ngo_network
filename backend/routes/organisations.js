@@ -1,5 +1,6 @@
 import express from "express";
 import Organisation from "../models/Organisation.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -26,6 +27,55 @@ router.post("/", async (req, res) => {
     res.status(201).json(newOrganisation);
   } catch (err) {
     res.status(400).json({ message: err.message });
+  }
+});
+
+router.get("/me", authMiddleware, async (req, res) => {
+  const org = await Organisation.findById(req.user.id);
+  res.json(org);
+});
+
+router.put("/update", authMiddleware, async (req, res) => {
+  const updates = req.body;
+
+  try {
+    const updatedOrg = await Organisation.findByIdAndUpdate(
+      req.user.id,
+      updates,
+      { new: true }
+    );
+    res.json(updatedOrg);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Obține o organizație după ID
+router.get("/:id", async (req, res) => {
+  try {
+    const org = await Organisation.findById(req.params.id).populate("projects");
+
+    if (!org) {
+      return res.status(404).json({ message: "Organisation not found" });
+    }
+
+    const response = {
+      id: org._id,
+      name: org.name,
+      logo: org.logo,
+      description: org.description,
+      domains: org.domains || [],
+      projects: (org.projects || []).map((p) => ({
+        id: p._id,
+        title: p.title,
+        deadline: p.deadline,
+      })),
+    };
+
+    res.json(response);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 

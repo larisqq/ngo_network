@@ -64,4 +64,22 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get project by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id)
+      .populate("host", "name _id")
+      .populate("partners", "name _id");
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    res.json(project);
+  } catch (err) {
+    console.error("Error in GET /projects/:id", err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 export default router;
