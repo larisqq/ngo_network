@@ -18,7 +18,7 @@ interface Organisation {
 }
 
 interface Project {
-  id: string;
+  _id: string;
   name: string;
   description: string;
   startDate: string;
@@ -38,6 +38,7 @@ interface Project {
       facebook?: string;
     };
   }>;
+  applyLink?: string;
 }
 
 export type { Organisation, Project };

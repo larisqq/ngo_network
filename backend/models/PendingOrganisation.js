@@ -1,3 +1,4 @@
+//models/PendingOrganisation.js
 import mongoose from "mongoose";
 
 const pendingOrganisationSchema = new mongoose.Schema(

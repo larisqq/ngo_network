@@ -1,5 +1,5 @@
 // Override-uri pentru Bootstrap (opțional)
-$primary: #2b6cb0;  // Exemplu de culoare personalizată
+$primary: #2b6777;  // Exemplu de culoare personalizată
 
 // Import Bootstrap (după variabile)
 @import 'bootstrap/scss/bootstrap';
@@ -16,11 +16,13 @@ $primary: #2b6cb0;  // Exemplu de culoare personalizată
   font-weight: bold;
   font-size: 1.5rem;
   letter-spacing: 1px;
+  color: #2b6777;
+
 }
 
 .navbar-nav {
   .nav-item {
-    margin-left: 0.5rem;
+    margin-left: 0.9rem;
     
     .nav-link {
       padding: 0.5rem 1rem;

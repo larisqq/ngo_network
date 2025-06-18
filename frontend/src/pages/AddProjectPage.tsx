@@ -1,11 +1,11 @@
 // src/pages/AddProjectPage.tsx
-//http://localhost:5173/add-project#
 import { useState, useEffect } from 'react';
 import { Form, Button, Alert, Spinner } from 'react-bootstrap';
 
-interface Organisation {
-  _id: string;
+interface Partner {
   name: string;
+  instagram?: string;
+  facebook?: string;
 }
 
 const AddProjectPage = () => {
@@ -19,19 +19,38 @@ const AddProjectPage = () => {
     domain: 'education',
     location: '',
     host: '',
+    partners: [] as Partner[],
   });
 
   const [infoPackFile, setInfoPackFile] = useState<File | null>(null);
-  const [organisations, setOrganisations] = useState<Organisation[]>([]);
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/organisations')
-      .then(res => res.json())
-      .then(data => setOrganisations(data))
-      .catch(err => console.error('Error loading organisations:', err));
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      setIsLoggedIn(false);
+      return;
+    }
+
+    const fetchOrganisation = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/organisations/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) throw new Error('Not authenticated');
+        const data = await res.json();
+        setFormData(prev => ({ ...prev, host: data._id }));
+      } catch (err) {
+        setIsLoggedIn(false);
+      }
+    };
+
+    fetchOrganisation();
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -52,7 +71,11 @@ const AddProjectPage = () => {
 
     const payload = new FormData();
     for (const key in formData) {
-      payload.append(key, (formData as any)[key]);
+      if (key === 'partners') {
+        payload.append('partners', JSON.stringify(formData.partners));
+      } else {
+        payload.append(key, (formData as any)[key]);
+      }
     }
     if (infoPackFile) {
       payload.append('infoPack', infoPackFile);
@@ -61,6 +84,9 @@ const AddProjectPage = () => {
     try {
       const res = await fetch('http://localhost:5000/api/projects', {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+        },
         body: payload,
       });
 
@@ -76,7 +102,8 @@ const AddProjectPage = () => {
         country: 'RO',
         domain: 'education',
         location: '',
-        host: '',
+        host: formData.host,
+        partners: [],
       });
       setInfoPackFile(null);
     } catch (err: any) {
@@ -85,6 +112,27 @@ const AddProjectPage = () => {
       setLoading(false);
     }
   };
+
+  const addPartner = () => {
+    setFormData(prev => ({
+      ...prev,
+      partners: [...prev.partners, { name: '', instagram: '', facebook: '' }],
+    }));
+  };
+
+  const updatePartner = (index: number, field: string, value: string) => {
+    const updated = [...formData.partners];
+    updated[index] = { ...updated[index], [field]: value };
+    setFormData(prev => ({ ...prev, partners: updated }));
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <div className="container my-5">
+        <Alert variant="danger">You must be logged in to add a project.</Alert>
+      </div>
+    );
+  }
 
   return (
     <div className="container my-5">
@@ -126,36 +174,15 @@ const AddProjectPage = () => {
 
         <Form.Group className="mb-3">
           <Form.Label>Country</Form.Label>
-            <Form.Select name="country" value={formData.country} onChange={handleChange}>
+          <Form.Select name="country" value={formData.country} onChange={handleChange}>
             <option value="">-- Select country --</option>
-            <option value="AT">Austria</option>
-            <option value="BE">Belgium</option>
-            <option value="BG">Bulgaria</option>
-            <option value="HR">Croatia</option>
-            <option value="CY">Cyprus</option>
-            <option value="CZ">Czech Republic</option>
-            <option value="DK">Denmark</option>
-            <option value="EE">Estonia</option>
-            <option value="FI">Finland</option>
+            <option value="RO">Romania</option>
             <option value="FR">France</option>
             <option value="DE">Germany</option>
-            <option value="GR">Greece</option>
-            <option value="HU">Hungary</option>
-            <option value="IE">Ireland</option>
-            <option value="IT">Italy</option>
-            <option value="LV">Latvia</option>
-            <option value="LT">Lithuania</option>
-            <option value="LU">Luxembourg</option>
-            <option value="MT">Malta</option>
-            <option value="NL">Netherlands</option>
-            <option value="PL">Poland</option>
-            <option value="PT">Portugal</option>
-            <option value="RO">Romania</option>
-            <option value="SK">Slovakia</option>
-            <option value="SI">Slovenia</option>
             <option value="ES">Spain</option>
-            <option value="SE">Sweden</option>
-            </Form.Select>
+            <option value="IT">Italy</option>
+            {/* restul țărilor... */}
+          </Form.Select>
         </Form.Group>
 
         <Form.Group className="mb-3">
@@ -169,14 +196,33 @@ const AddProjectPage = () => {
           </Form.Select>
         </Form.Group>
 
+        {/* Partners section */}
         <Form.Group className="mb-3">
-          <Form.Label>Host Organisation</Form.Label>
-          <Form.Select name="host" value={formData.host} onChange={handleChange} required>
-            <option value="">-- Select organisation --</option>
-            {organisations.map(org => (
-              <option key={org._id} value={org._id}>{org.name}</option>
-            ))}
-          </Form.Select>
+          <Form.Label>Project Partners</Form.Label>
+          {formData.partners.map((partner, index) => (
+            <div key={index} className="border rounded p-3 mb-2">
+              <Form.Control
+                placeholder="Partner Name"
+                value={partner.name}
+                onChange={(e) => updatePartner(index, 'name', e.target.value)}
+                className="mb-2"
+              />
+              <Form.Control
+                placeholder="Instagram"
+                value={partner.instagram}
+                onChange={(e) => updatePartner(index, 'instagram', e.target.value)}
+                className="mb-2"
+              />
+              <Form.Control
+                placeholder="Facebook"
+                value={partner.facebook}
+                onChange={(e) => updatePartner(index, 'facebook', e.target.value)}
+              />
+            </div>
+          ))}
+          <Button variant="secondary" onClick={addPartner}>
+            + Add Partner
+          </Button>
         </Form.Group>
 
         <Form.Group className="mb-3">

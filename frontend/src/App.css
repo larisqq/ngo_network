@@ -3,3 +3,33 @@
   transition: transform 0.2s ease;
   cursor: pointer;
 }
+
+
+.project-card {
+  height: 100%; /* card complet flexibil */
+  min-height: 350px; /* asigură o înălțime minimă egală */
+  display: flex;
+  flex-direction: column;
+}
+.btn-primary {
+  background-color: #2b6777;
+  border-color: #2b6777;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: #1f4c5a;
+  border-color: #1f4c5a;
+}
+ .navbar {
+  background-color: #2b6777;
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

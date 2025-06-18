@@ -21,10 +21,26 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-md bg-primary navbar-dark">
+    <nav
+      className="navbar navbar-expand-md navbar-dark"
+      style={{ backgroundColor: "#2b6777" }}
+    >
       <div className="container-fluid">
-        <Link className="navbar-brand me-auto" to="/">
-          NGO NETWORK
+        <Link
+          className="navbar-brand me-auto d-flex align-items-center gap-2"
+          to="/"
+        >
+          <img
+            src="/cv2.png"
+            alt="Globe Logo"
+            style={{
+              height: "50px",
+              width: "50px",
+              borderRadius: "70%",
+              objectFit: "contain",
+            }}
+          />
+          <span className="fw-bold text-light">NGO NETWORK</span>
         </Link>
 
         <button
@@ -39,25 +55,37 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarContent">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <Link className="nav-link" to="/">HOME</Link>
+              <Link className="nav-link text-light" to="/">
+                HOME
+              </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/projects">OPPORTUNITIES</Link>
+              <Link className="nav-link text-light" to="/projects">
+                OPPORTUNITIES
+              </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/organisations">ORGANISATIONS</Link>
+              <Link className="nav-link text-light" to="/organisations">
+                ORGANISATIONS
+              </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/about">ABOUT ERASMUS+</Link>
+              <Link className="nav-link text-light" to="/about">
+                ABOUT ERASMUS+
+              </Link>
             </li>
 
             {!isLoggedIn ? (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/signup">Sign Up</Link>
+                  <Link className="nav-link text-light" to="/signup">
+                    Sign Up
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/login">Login</Link>
+                  <Link className="nav-link text-light" to="/login">
+                    Login
+                  </Link>
                 </li>
               </>
             ) : (
@@ -69,26 +97,39 @@ const Navbar = () => {
                   aria-expanded="false"
                 >
                   {logoUrl ? (
-  <img
-    src={logoUrl}
-    alt="Profile"
-    style={{ width: "35px", height: "35px", borderRadius: "50%", objectFit: "cover" }}
-  />
-) : (
-  <i className="bi bi-person-circle fs-3 text-light"></i> // Bootstrap icon fallback
-)}
-
+                    <img
+                      src={logoUrl}
+                      alt="Profile"
+                      style={{
+                        width: "35px",
+                        height: "35px",
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <i className="bi bi-person-circle fs-3 text-light"></i>
+                  )}
                 </div>
                 <ul className="dropdown-menu dropdown-menu-end">
                   <li>
-                    <Link className="dropdown-item" to="/edit-profile">Edit Profile</Link>
+                    <Link className="dropdown-item" to="/edit-profile">
+                      Edit Profile
+                    </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="/add-project">Add Project</Link>
+                    <Link className="dropdown-item" to="/add-project">
+                      Add Project
+                    </Link>
                   </li>
-                  <li><hr className="dropdown-divider" /></li>
                   <li>
-                    <button className="dropdown-item text-danger" onClick={handleLogout}>
+                    <hr className="dropdown-divider" />
+                  </li>
+                  <li>
+                    <button
+                      className="dropdown-item text-danger"
+                      onClick={handleLogout}
+                    >
                       Logout
                     </button>
                   </li>

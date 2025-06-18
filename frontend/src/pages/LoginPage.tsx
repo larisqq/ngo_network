@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Form, Button, Alert, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
+// LoginPage.tsx
+
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -31,12 +33,13 @@ const LoginPage = () => {
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("orgLogo", data.logo); // Assuming you send logo in login response
 
-
       navigate("/");
       window.location.reload();
     } catch (err: any) {
       if (err.message === "Please verify your email first") {
-        setErrorMsg("You need to verify your email address first. Please check your inbox!");
+        setErrorMsg(
+          "You need to verify your email address first. Please check your inbox!"
+        );
       } else {
         setErrorMsg(err.message);
       }

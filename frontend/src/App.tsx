@@ -11,6 +11,7 @@ import LoginPage from './pages/LoginPage';
 import VerifyPage from './pages/VerifyPage'; // pagină pentru verificarea contului
 import Footer from './components/Footer'; // presupunând că ai un component Footer
 import EditProfile from './pages/EditProfilePage'; // pagină pentru editarea profilului utilizatorului
+import AboutPage from './pages/AboutPage'; // pagină despre erasmus
 import './App.css';
 
 function App() {
@@ -29,7 +30,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/verify" element={<VerifyPage />} />
           <Route path="/edit-profile" element={<EditProfile />} />
-          
+          <Route path="/about" element={<AboutPage />} />
 
           
 

@@ -41,29 +41,62 @@ router.post("/signup", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// Veche (greșită):
+// router.get("/verify/:token", async (req, res) => {
 
-// VERIFY - mută organizația în colecția reală
-router.get("/verify/:token", async (req, res) => {
-  const { token } = req.params;
+router.get("/verify", async (req, res) => {
+  const token = req.query.token;
 
   try {
     const pendingOrg = await PendingOrganisation.findOne({
       verificationToken: token,
     });
+
+    if (!pendingOrg) {
+      return res.status(400).json({ error: "Invalid token" });
+    }
+
+    // NU mutăm încă organizația în baza de date finală!
+    res.status(200).json({
+      name: pendingOrg.name,
+      logo: pendingOrg.logo,
+      email: pendingOrg.contact.email,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ✅ FINALIZE REGISTRATION
+router.post("/finalize", async (req, res) => {
+  const token = req.query.token;
+  const { description, domains, socialMedia, phone } = req.body;
+
+  try {
+    const pendingOrg = await PendingOrganisation.findOne({
+      verificationToken: token,
+    });
+
     if (!pendingOrg) return res.status(400).json({ error: "Invalid token" });
 
     const finalOrg = new Organisation({
       name: pendingOrg.name,
       logo: pendingOrg.logo,
       password: pendingOrg.password,
-      contact: { email: pendingOrg.contact.email },
+      contact: {
+        email: pendingOrg.contact.email,
+        phone: phone || null,
+      },
+      description,
+      domains,
+      socialMedia,
       isVerified: true,
     });
 
-    await finalOrg.save();
+    await finalOrg.save(); // acum e mutată
     await PendingOrganisation.deleteOne({ _id: pendingOrg._id });
 
-    res.status(200).json({ message: "Email verified successfully!" });
+    res.status(200).json({ message: "Organisation registered and verified!" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -87,6 +120,12 @@ router.post("/login", async (req, res) => {
 
     const token = jwt.sign({ id: org._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
+    });
+    res.json({
+      token,
+      logo: org.logo,
+      name: org.name,
+      id: org._id,
     });
 
     res.json({ token });

@@ -1,3 +1,4 @@
+//models/Organisation.js
 import mongoose from "mongoose";
 
 const organisationSchema = new mongoose.Schema(
