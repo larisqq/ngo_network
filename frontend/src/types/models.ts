@@ -1,20 +1,25 @@
 // src/types/models.ts
+
 interface Organisation {
   _id: string;
   name: string;
   logo: string;
   description: string;
   domains: string[];
-  socialMedia?: {
-    website?: string;
-    facebook?: string;
-    instagram?: string;
-  };
   contact: {
     email: string;
     phone?: string;
   };
-  projects?: Project[]; 
+  hostedProjects?: {
+    _id: string;
+    title: string;
+    deadline: string;
+  }[];
+  partnerIn?: {
+    _id: string;
+    title: string;
+    deadline: string;
+  }[];
 }
 
 interface Project {
@@ -26,12 +31,12 @@ interface Project {
   country: string; // 'RO' | 'MD' | 'UA' | 'BG' | 'HU' | 'RS'
   domain: string ; // 'environment' | 'education' | 'well-being' | 'health' | 'community';
   host: {
-    id: string;
+    _id: string;
     name: string;
     logo?: string;
   };
   partners?: Array<{
-    id: string;
+    _id: string;
     name: string;
     socialMedia?: {
       instagram?: string;

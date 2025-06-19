@@ -1,8 +1,13 @@
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import  api  from '../api/client'; 
-import { Spinner, Alert, Badge, ListGroup } from 'react-bootstrap';
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { Spinner, Alert, Badge, ListGroup } from "react-bootstrap";
+
+interface ProjectPreview {
+  id: string;
+  name: string;
+  deadline: string;
+}
 
 interface Organisation {
   id: string;
@@ -10,26 +15,25 @@ interface Organisation {
   logo: string;
   description: string;
   domains: string[];
-  projects: {
-    id: string;
-    title: string;
-    deadline: string;
-  }[];
+  hostedProjects: ProjectPreview[];
+  partnerIn: ProjectPreview[];
 }
 
-const OrganisationProfile: React.FC = () => {
+const OrganisationProfile = () => {
   const { id } = useParams<{ id: string }>();
   const [org, setOrg] = useState<Organisation | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchOrganisation = async () => {
       try {
-        const response = await api.get(`/organisations/${id}`);
+        const response = await axios.get(
+          `http://localhost:5000/api/organisations/${id}`
+        );
         setOrg(response.data);
       } catch (err) {
-        setError('Could not load organisation details');
+        setError("Could not load organisation details");
       } finally {
         setLoading(false);
       }
@@ -38,15 +42,17 @@ const OrganisationProfile: React.FC = () => {
     fetchOrganisation();
   }, [id]);
 
-  if (loading) return <Spinner animation="border" className="d-block mx-auto my-5" />;
+  if (loading)
+    return <Spinner animation="border" className="d-block mx-auto my-5" />;
   if (error) return <Alert variant="danger">{error}</Alert>;
   if (!org) return <Alert variant="warning">Organisation not found</Alert>;
 
   return (
     <div className="container py-5">
       <div className="row">
+        {/* COL 1: ORGANISATION INFO */}
         <div className="col-md-4 mb-4">
-          <div className="card sticky-top" style={{ top: '20px' }}>
+          <div className="card sticky-top" style={{ top: "20px" }}>
             <img
               src={org.logo}
               alt={`${org.name} logo`}
@@ -66,22 +72,61 @@ const OrganisationProfile: React.FC = () => {
           </div>
         </div>
 
+        {/* COL 2: PROJECTS */}
         <div className="col-md-8">
+          {/* Hosted Projects */}
           <div className="card mb-4">
             <div className="card-header bg-primary text-white">
-              <h3 className="h5 mb-0">Active Projects</h3>
+              <h3 className="h5 mb-0">Projects Organised by This NGO</h3>
             </div>
             <ListGroup variant="flush">
-              {org.projects.map((project) => (
-                <ListGroup.Item key={project.id} action>
-                  <div className="d-flex justify-content-between">
-                    <span>{project.title}</span>
-                    <small className="text-muted">
-                      Deadline: {new Date(project.deadline).toLocaleDateString()}
-                    </small>
-                  </div>
+              {org.hostedProjects.length > 0 ? (
+                org.hostedProjects.map((project) => (
+                  <ListGroup.Item key={project.id}>
+                    <div className="d-flex justify-content-between">
+                      <span>{project.name}</span>
+                      <small className="text-muted">
+                        Deadline:{" "}
+                        {project.deadline
+                          ? new Date(project.deadline).toLocaleDateString()
+                          : "—"}
+                      </small>
+                    </div>
+                  </ListGroup.Item>
+                ))
+              ) : (
+                <ListGroup.Item className="text-muted">
+                  No hosted projects
                 </ListGroup.Item>
-              ))}
+              )}
+            </ListGroup>
+          </div>
+
+          {/* Partner In Projects */}
+          <div className="card mb-4">
+            <div className="card-header bg-secondary text-white">
+              <h3 className="h5 mb-0">Projects Where This NGO is a Partner</h3>
+            </div>
+            <ListGroup variant="flush">
+              {org.partnerIn.length > 0 ? (
+                org.partnerIn.map((project) => (
+                  <ListGroup.Item key={project.id}>
+                    <div className="d-flex justify-content-between">
+                      <span>{project.name}</span>
+                      <small className="text-muted">
+                        Deadline:{" "}
+                        {project.deadline
+                          ? new Date(project.deadline).toLocaleDateString()
+                          : "—"}
+                      </small>
+                    </div>
+                  </ListGroup.Item>
+                ))
+              ) : (
+                <ListGroup.Item className="text-muted">
+                  No partner projects
+                </ListGroup.Item>
+              )}
             </ListGroup>
           </div>
         </div>

@@ -1,3 +1,4 @@
+// routes/organisations.js
 import express from "express";
 import Organisation from "../models/Organisation.js";
 import authMiddleware from "../middleware/authMiddleware.js";
@@ -53,7 +54,9 @@ router.put("/update", authMiddleware, async (req, res) => {
 // Obține o organizație după ID
 router.get("/:id", async (req, res) => {
   try {
-    const org = await Organisation.findById(req.params.id).populate("projects");
+    const org = await Organisation.findById(req.params.id)
+      .populate("hostedProjects")
+      .populate("partnerIn");
 
     if (!org) {
       return res.status(404).json({ message: "Organisation not found" });
@@ -65,9 +68,14 @@ router.get("/:id", async (req, res) => {
       logo: org.logo,
       description: org.description,
       domains: org.domains || [],
-      projects: (org.projects || []).map((p) => ({
+      hostedProjects: (org.hostedProjects || []).map((p) => ({
         id: p._id,
-        title: p.title,
+        name: p.name,
+        deadline: p.deadline,
+      })),
+      partnerIn: (org.partnerIn || []).map((p) => ({
+        id: p._id,
+        name: p.name,
         deadline: p.deadline,
       })),
     };

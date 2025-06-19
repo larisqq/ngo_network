@@ -1,18 +1,20 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import HomePage from './pages/HomePage'; // dacă ai o pagină de tip landing/home
-import OrganisationsPage from './pages/Orgs';
-import ProjectsPage from './pages/ProjectsPage';
-import OrganisationProfile from './pages/OrgProfile'; // pagină individuală ONG
-import ProjectProfilePage from './pages/ProjectProfilePage'; // pagină individuală proiect
-import AddProjectPage from './pages/AddProjectPage';
-import SignUpPage from './pages/SignUpPage';
-import LoginPage from './pages/LoginPage'; 
-import VerifyPage from './pages/VerifyPage'; // pagină pentru verificarea contului
-import Footer from './components/Footer'; // presupunând că ai un component Footer
-import EditProfile from './pages/EditProfilePage'; // pagină pentru editarea profilului utilizatorului
-import AboutPage from './pages/AboutPage'; // pagină despre erasmus
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import HomePage from "./pages/HomePage"; // dacă ai o pagină de tip landing/home
+import OrganisationsPage from "./pages/Orgs";
+import ProjectsPage from "./pages/ProjectsPage";
+import OrganisationProfile from "./pages/OrgProfile"; // pagină individuală ONG
+import ProjectProfilePage from "./pages/ProjectProfilePage"; // pagină individuală proiect
+import AddProjectPage from "./pages/AddProjectPage";
+import SignUpPage from "./pages/SignUpPage";
+import LoginPage from "./pages/LoginPage";
+import VerifyPage from "./pages/VerifyPage"; // pagină pentru verificarea contului
+import Footer from "./components/Footer"; // presupunând că ai un component Footer
+import EditProfile from "./pages/EditProfilePage"; // pagină pentru editarea profilului utilizatorului
+import AboutPage from "./pages/AboutPage"; // pagină despre erasmus
+import "./App.css";
+
+import TestUploadPage from "./pages/TestUploadPage"; // pagină pentru testarea încărcării fișierelor
 
 function App() {
   return (
@@ -31,13 +33,10 @@ function App() {
           <Route path="/verify" element={<VerifyPage />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/about" element={<AboutPage />} />
-
-          
-
+          <Route path="/test-upload" element={<TestUploadPage />} />
         </Routes>
       </div>
       <Footer />
-
     </Router>
   );
 }

@@ -6,6 +6,8 @@ import organisationRoutes from "./routes/organisations.js";
 import projectRoutes from "./routes/projects.js";
 import authRoutes from "./routes/auth.js";
 import dotenv from "dotenv";
+import cloudinary from "./config/cloudinaryConfig.js";
+import uploadRoutes from "./routes/uploads.js";
 
 dotenv.config();
 
@@ -25,5 +27,6 @@ connectDB();
 app.use("/api/organisations", organisationRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/uploads", uploadRoutes);
 
 export default app;

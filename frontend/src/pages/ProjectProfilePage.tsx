@@ -1,6 +1,8 @@
-import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { Spinner, Button, Badge } from 'react-bootstrap';
+// ProjectProfilePage.tsx
+
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Spinner, Button, Badge } from "react-bootstrap";
 
 interface Project {
   id: string;
@@ -25,7 +27,7 @@ const ProjectProfilePage = () => {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const API_BASE_URL = 'http://localhost:5000'; 
+  const API_BASE_URL = "http://localhost:5000";
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -36,7 +38,9 @@ const ProjectProfilePage = () => {
           id: data._id,
           title: data.name,
           description: data.description,
-          infoPackUrl: data.infoPackUrl ? `${API_BASE_URL}${data.infoPackUrl}` : undefined,
+          infoPackUrl: data.infoPackUrl
+            ? `${API_BASE_URL}${data.infoPackUrl}`
+            : undefined,
           startDate: data.startDate,
           endDate: data.endDate,
           deadline: data.deadline,
@@ -50,7 +54,7 @@ const ProjectProfilePage = () => {
         };
         setProject(mapped);
       } catch (err) {
-        console.error('Failed to load project:', err);
+        console.error("Failed to load project:", err);
       } finally {
         setLoading(false);
       }
@@ -59,10 +63,13 @@ const ProjectProfilePage = () => {
     fetchProject();
   }, [id]);
 
-  if (loading) return <Spinner animation="border" className="d-block mx-auto my-5" />;
-  if (!project) return <div className="text-center text-danger">Project not found</div>;
+  if (loading)
+    return <Spinner animation="border" className="d-block mx-auto my-5" />;
+  if (!project)
+    return <div className="text-center text-danger">Project not found</div>;
 
-  const isBeforeDeadline = project.deadline && new Date(project.deadline) > new Date();
+  const isBeforeDeadline =
+    project.deadline && new Date(project.deadline) > new Date();
 
   return (
     <div className="container py-5">
@@ -83,27 +90,32 @@ const ProjectProfilePage = () => {
             title="InfoPack"
             width="100%"
             height="600px"
-            style={{ border: '1px solid #ccc', borderRadius: '8px' }}
+            style={{ border: "1px solid #ccc", borderRadius: "8px" }}
           />
         </div>
       )}
 
       <div className="mb-3">
-        <p><strong>Location:</strong> {project.location || '—'}</p>
         <p>
-          <strong>Period:</strong> {new Date(project.startDate).toLocaleDateString()} –{' '}
+          <strong>Location:</strong> {project.location || "—"}
+        </p>
+        <p>
+          <strong>Period:</strong>{" "}
+          {new Date(project.startDate).toLocaleDateString()} –{" "}
           {new Date(project.endDate).toLocaleDateString()}
         </p>
         {project.deadline && (
           <p>
-            <strong>Apply before:</strong>{' '}
+            <strong>Apply before:</strong>{" "}
             {new Date(project.deadline).toLocaleDateString()}
           </p>
         )}
       </div>
 
       {isBeforeDeadline ? (
-        <Button variant="success" size="lg">Apply now</Button>
+        <Button variant="success" size="lg">
+          Apply now
+        </Button>
       ) : (
         <Button variant="secondary" size="lg" disabled>
           Application closed

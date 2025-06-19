@@ -1,3 +1,4 @@
+// models/Project.js
 import mongoose from "mongoose";
 
 const projectSchema = new mongoose.Schema(
@@ -50,15 +51,23 @@ const projectSchema = new mongoose.Schema(
     },
     deadline: Date,
     infoPackUrl: String,
+    coverImageUrl: String,
     host: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Organisation",
       required: true,
     },
-    partners: [{ type: mongoose.Schema.Types.ObjectId, ref: "Organisation" }],
-    location: String,
-    startDate: Date,
-    endDate: Date,
+    partners: [
+      {
+        instagram: { type: String, required: true },
+        country: { type: String, required: true },
+        organisationRef: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Organisation",
+          default: null, // va fi completat doar dacă există ONG-ul
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -1,35 +1,185 @@
-.card:hover {
-  transform: translateY(-4px);
-  transition: transform 0.2s ease;
-  cursor: pointer;
+/* Card Hover Effect */
+.card {
+  transition: transform 0.2s ease, box-shadow 0.3s ease-in-out;
 }
 
+.card:hover {
+  transform: translateY(-8px) scale(1.05); /* Cardul crește ușor și se ridică */
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1); /* Adăugăm o umbră pentru a crea adâncire */
+  cursor: pointer;
+}
 
 .project-card {
   height: 100%; /* card complet flexibil */
   min-height: 350px; /* asigură o înălțime minimă egală */
   display: flex;
   flex-direction: column;
+  border-radius: 8px; /* Colțuri rotunjite pentru un aspect mai modern */
+  overflow: hidden;
+  transition: box-shadow 0.3s ease-in-out;
 }
+
+.project-card:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1); /* Umbra cardului devine mai puternică */
+}
+
+/* Stiluri pentru butoanele */
 .btn-primary {
   background-color: #2b6777;
   border-color: #2b6777;
   color: #ffffff;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  padding: 12px 24px; /* Butoane mai mari pentru un efect mai pronunțat */
+  font-weight: bold; /* Text mai îndrăzneț */
+  border-radius: 5px; /* Colțuri rotunjite pentru butoane */
 }
 
 .btn-primary:hover {
   background-color: #1f4c5a;
   border-color: #1f4c5a;
 }
- .navbar {
-  background-color: #2b6777;
+
+.btn-primary:focus {
+  outline: none; /* eliminăm conturul implicit */
+  box-shadow: 0 0 0 3px rgba(42, 103, 119, 0.5); /* Adăugăm o umbră subtilă în jurul butonului când este selectat */
+}
+
+/* Navbar */
+.navbar {
+  background: linear-gradient(45deg, #2b6777, #352ab9); /* Gradient modern pentru navbar */
   color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 10px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Umbra mai mare pentru navbar */
+  padding: 12px 30px;
   position: sticky;
   top: 0;
   z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-radius: 8px; /* Colțuri rotunjite pentru navbar */
+}
+
+.navbar a {
+  color: #ffffff;
+  text-decoration: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar a:hover {
+  background-color: #352ab9;
+  color: #ffffff;
+}
+
+.navbar .logo {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+/* Adăugăm un efect pentru logo când utilizatorul plasează mouse-ul pe el */
+.navbar .logo:hover {
+  transform: scale(1.1); /* Mărim puțin logo-ul când utilizatorul îl hover */
+  color: #c8d8e4; /* Schimbăm culoarea în ceva mai deschis */
+}
+
+/* Responsive Navbar pentru mobile */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .navbar a {
+    padding: 10px 20px;
+    margin: 5px 0;
+  }
+}
+
+/* App.css */
+
+/* Tranziția pentru intrare */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Tranziția pentru ieșire */
+.page-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+/* Stiluri pentru secțiunea Our Mission */
+
+.mission-section {
+  background-color: #f0f4f8;
+  padding: 50px 20px;
+  text-align: center;
+}
+/* Stiluri pentru secțiunea Our Mission */
+.mission-card {
+  padding: 20px;
+  border: 1px solid #c8d8e4;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  transition: transform 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 300px; /* Fixăm înălțimea pentru a fi uniformă */
+}
+
+.mission-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.mission-icon {
+  font-size: 50px; /* Mărime consistentă pentru toate icoanele */
+  color: #2b6777;
+}
+
+.mission-card h5 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #2b6777;
+  margin-top: 15px;
+}
+
+.mission-card p {
+  font-size: 1rem;
+  color: #555;
+  margin-top: 10px;
+  text-align: center; /* Aliniere text centrală */
+}
+
+/* Stiluri pentru secțiunea Hero */
+.hero-section {
+  height: 70vh;
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+}
+
+.hero-section h1 {
+  font-size: 3.5rem;
+  font-weight: bold;
+}
+
+.hero-section .lead {
+  font-size: 1.25rem;
 }
