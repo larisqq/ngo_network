@@ -6,6 +6,7 @@ interface Organisation {
   logo: string;
   description: string;
   domains: string[];
+  country: string; 
   contact: {
     email: string;
     phone?: string;

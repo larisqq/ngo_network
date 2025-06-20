@@ -14,8 +14,6 @@ import EditProfile from "./pages/EditProfilePage"; // pagină pentru editarea pr
 import AboutPage from "./pages/AboutPage"; // pagină despre erasmus
 import "./App.css";
 
-import TestUploadPage from "./pages/TestUploadPage"; // pagină pentru testarea încărcării fișierelor
-
 function App() {
   return (
     <Router>
@@ -33,7 +31,6 @@ function App() {
           <Route path="/verify" element={<VerifyPage />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/test-upload" element={<TestUploadPage />} />
         </Routes>
       </div>
       <Footer />

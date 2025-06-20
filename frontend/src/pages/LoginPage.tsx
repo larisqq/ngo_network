@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Form, Button, Alert, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-// LoginPage.tsx
-
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -22,16 +20,20 @@ const LoginPage = () => {
     try {
       const res = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // ✅ important pentru cookie-uri
         body: JSON.stringify(formData),
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.error || "Login failed");
 
-      localStorage.setItem("authToken", data.token);
-      localStorage.setItem("orgLogo", data.logo); // Assuming you send logo in login response
+      // ✅ Nu mai salvăm tokenul în localStorage
+      localStorage.setItem("orgLogo", data.logo);
+      localStorage.setItem("orgName", data.name);
+      localStorage.setItem("orgId", data.id);
 
       navigate("/");
       window.location.reload();

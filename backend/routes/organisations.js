@@ -2,6 +2,7 @@
 import express from "express";
 import Organisation from "../models/Organisation.js";
 import authMiddleware from "../middleware/authMiddleware.js";
+import Project from "../models/Project.js";
 
 const router = express.Router();
 
@@ -51,39 +52,62 @@ router.put("/update", authMiddleware, async (req, res) => {
   }
 });
 
-// Obține o organizație după ID
+// RUTA GET /api/organisations/:id - cu hostedProjects și partnerIn
 router.get("/:id", async (req, res) => {
   try {
-    const org = await Organisation.findById(req.params.id)
-      .populate("hostedProjects")
-      .populate("partnerIn");
-
-    if (!org) {
-      return res.status(404).json({ message: "Organisation not found" });
+    const organisation = await Organisation.findById(req.params.id);
+    if (!organisation) {
+      return res.status(404).json({ error: "Organisation not found" });
     }
 
-    const response = {
-      id: org._id,
-      name: org.name,
-      logo: org.logo,
-      description: org.description,
-      domains: org.domains || [],
-      hostedProjects: (org.hostedProjects || []).map((p) => ({
-        id: p._id,
-        name: p.name,
-        deadline: p.deadline,
-      })),
-      partnerIn: (org.partnerIn || []).map((p) => ({
-        id: p._id,
-        name: p.name,
-        deadline: p.deadline,
-      })),
-    };
+    // Proiectele în care e host
+    const hostedProjects = await Project.find({ host: organisation._id })
+      .select("_id name deadline country")
+      .lean();
 
-    res.json(response);
+    // Proiectele în care e partener
+    const partnerIn = await Project.find({
+      "partners.organisationRef": organisation._id,
+    })
+      .select("_id name deadline country")
+      .lean();
+
+    res.json({
+      id: organisation._id,
+      name: organisation.name,
+      logo: organisation.logo,
+      description: organisation.description,
+      domains: organisation.domains || [],
+      hostedProjects: hostedProjects.map((p) => ({
+        id: p._id,
+        name: p.name,
+        deadline: p.deadline,
+        country: p.country,
+      })),
+      partnerIn: partnerIn.map((p) => ({
+        id: p._id,
+        name: p.name,
+        deadline: p.deadline,
+        country: p.country,
+      })),
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.error("Error fetching organisation profile:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.get("/me", authMiddleware, async (req, res) => {
+  if (!req.user?.id) {
+    return res.status(401).json({ error: "Unauthorized - Missing user ID" });
+  }
+
+  try {
+    const org = await Organisation.findById(req.user.id);
+    if (!org) return res.status(404).json({ error: "Organisation not found" });
+    res.json(org);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

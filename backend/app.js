@@ -8,13 +8,21 @@ import authRoutes from "./routes/auth.js";
 import dotenv from "dotenv";
 import cloudinary from "./config/cloudinaryConfig.js";
 import uploadRoutes from "./routes/uploads.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
 const app = express();
+app.use(cookieParser());
+
+app.use(
+  cors({
+    origin: "http://localhost:5173", // frontend-ul tău
+    credentials: true, // permite cookie-urile
+  })
+);
 
 // Middleware
-app.use(cors());
 app.use(express.json());
 
 // Serve static files from uploads folder

@@ -3,21 +3,48 @@ import { useEffect, useState } from "react";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [logoUrl, setLogoUrl] = useState("");
+  const [orgId, setOrgId] = useState("");
+  const [orgName, setOrgName] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    const logo = localStorage.getItem("orgLogo");
-    setIsLoggedIn(!!token);
-    setLogoUrl(logo || "");
+    const fetchSession = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/organisations/me", {
+          credentials: "include", // 🔐 cookie-based auth
+        });
+        if (!res.ok) {
+          setIsLoggedIn(false);
+          return;
+        }
+        const data = await res.json();
+        setOrgId(data._id);
+        setOrgName(data.name || "My NGO");
+        setIsLoggedIn(true);
+      } catch (error) {
+        console.error("Error checking session:", error);
+        setIsLoggedIn(false);
+      }
+    };
+
+    fetchSession();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("orgLogo");
-    setIsLoggedIn(false);
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      await fetch("http://localhost:5000/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (err) {
+      console.error("Logout failed:", err);
+    } finally {
+      setIsLoggedIn(false);
+      setOrgId("");
+      setOrgName("");
+      navigate("/");
+      window.location.reload();
+    }
   };
 
   return (
@@ -90,28 +117,23 @@ const Navbar = () => {
               </>
             ) : (
               <li className="nav-item dropdown">
-                <div
-                  className="nav-link dropdown-toggle d-flex align-items-center"
+                <span
+                  className="nav-link dropdown-toggle text-light"
                   role="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  {logoUrl ? (
-                    <img
-                      src={logoUrl}
-                      alt="Profile"
-                      style={{
-                        width: "35px",
-                        height: "35px",
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  ) : (
-                    <i className="bi bi-person-circle fs-3 text-light"></i>
-                  )}
-                </div>
+                  {orgName || "Account"}
+                </span>
                 <ul className="dropdown-menu dropdown-menu-end">
+                  <li>
+                    <Link
+                      className="dropdown-item"
+                      to={`/organisations/${orgId}`}
+                    >
+                      See Profile
+                    </Link>
+                  </li>
                   <li>
                     <Link className="dropdown-item" to="/edit-profile">
                       Edit Profile

@@ -37,6 +37,7 @@ const projectSchema = new mongoose.Schema(
       ],
     },
     description: String,
+    objectives: [{ type: String }],
     domain: {
       type: String,
       enum: [
@@ -49,9 +50,15 @@ const projectSchema = new mongoose.Schema(
         "environment",
       ],
     },
+    period: {
+      start: { type: Date, required: true },
+      end: { type: Date, required: true },
+    },
     deadline: Date,
     infoPackUrl: String,
     coverImageUrl: String,
+    targetAudience: String,
+    applyUrl: String,
     host: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Organisation",

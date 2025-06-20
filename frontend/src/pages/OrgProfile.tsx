@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { Spinner, Alert, Badge, ListGroup } from "react-bootstrap";
 
@@ -7,6 +7,7 @@ interface ProjectPreview {
   id: string;
   name: string;
   deadline: string;
+  country?: string;
 }
 
 interface Organisation {
@@ -33,7 +34,8 @@ const OrganisationProfile = () => {
         );
         setOrg(response.data);
       } catch (err) {
-        setError("Could not load organisation details");
+        console.error("Error loading organisation:", err);
+        setError("Could not load organisation details.");
       } finally {
         setLoading(false);
       }
@@ -44,13 +46,25 @@ const OrganisationProfile = () => {
 
   if (loading)
     return <Spinner animation="border" className="d-block mx-auto my-5" />;
-  if (error) return <Alert variant="danger">{error}</Alert>;
-  if (!org) return <Alert variant="warning">Organisation not found</Alert>;
+
+  if (error)
+    return (
+      <Alert variant="danger" className="text-center my-4">
+        {error}
+      </Alert>
+    );
+
+  if (!org)
+    return (
+      <Alert variant="warning" className="text-center my-4">
+        Organisation not found
+      </Alert>
+    );
 
   return (
     <div className="container py-5">
       <div className="row">
-        {/* COL 1: ORGANISATION INFO */}
+        {/* LEFT: Organisation Info */}
         <div className="col-md-4 mb-4">
           <div className="card sticky-top" style={{ top: "20px" }}>
             <img
@@ -72,7 +86,7 @@ const OrganisationProfile = () => {
           </div>
         </div>
 
-        {/* COL 2: PROJECTS */}
+        {/* RIGHT: Projects */}
         <div className="col-md-8">
           {/* Hosted Projects */}
           <div className="card mb-4">
@@ -82,9 +96,21 @@ const OrganisationProfile = () => {
             <ListGroup variant="flush">
               {org.hostedProjects.length > 0 ? (
                 org.hostedProjects.map((project) => (
-                  <ListGroup.Item key={project.id}>
-                    <div className="d-flex justify-content-between">
-                      <span>{project.name}</span>
+                  <ListGroup.Item
+                    key={project.id}
+                    as={Link}
+                    to={`/projects/${project.id}`}
+                    action
+                  >
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div>
+                        <strong>{project.name}</strong>
+                        {project.country && (
+                          <span className="ms-2 badge bg-light text-dark">
+                            {project.country}
+                          </span>
+                        )}
+                      </div>
                       <small className="text-muted">
                         Deadline:{" "}
                         {project.deadline
@@ -102,7 +128,7 @@ const OrganisationProfile = () => {
             </ListGroup>
           </div>
 
-          {/* Partner In Projects */}
+          {/* Partner Projects */}
           <div className="card mb-4">
             <div className="card-header bg-secondary text-white">
               <h3 className="h5 mb-0">Projects Where This NGO is a Partner</h3>
@@ -110,9 +136,21 @@ const OrganisationProfile = () => {
             <ListGroup variant="flush">
               {org.partnerIn.length > 0 ? (
                 org.partnerIn.map((project) => (
-                  <ListGroup.Item key={project.id}>
-                    <div className="d-flex justify-content-between">
-                      <span>{project.name}</span>
+                  <ListGroup.Item
+                    key={project.id}
+                    as={Link}
+                    to={`/projects/${project.id}`}
+                    action
+                  >
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div>
+                        <strong>{project.name}</strong>
+                        {project.country && (
+                          <span className="ms-2 badge bg-light text-dark">
+                            {project.country}
+                          </span>
+                        )}
+                      </div>
                       <small className="text-muted">
                         Deadline:{" "}
                         {project.deadline

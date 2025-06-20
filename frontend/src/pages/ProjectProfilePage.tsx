@@ -1,58 +1,48 @@
-// ProjectProfilePage.tsx
-
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Spinner, Button, Badge } from "react-bootstrap";
+import { Spinner, Button, Badge, Card } from "react-bootstrap";
 
 interface Project {
-  id: string;
-  title: string;
+  _id: string;
+  name: string;
   description: string;
   infoPackUrl?: string;
+  coverImageUrl?: string;
   startDate: string;
   endDate: string;
   deadline?: string;
+  location?: string;
   country: string;
   domain: string;
-  location?: string;
+  targetAudience?: string;
+  applyUrl?: string;
+  objectives?: string[];
   host: {
-    id: string;
+    _id: string;
     name: string;
+    logo?: string;
   };
+  partners?: Array<{
+    instagram: string;
+    country: string;
+    organisationRef?: {
+      _id: string;
+      name: string;
+    };
+  }>;
 }
 
 const ProjectProfilePage = () => {
   const { id } = useParams<{ id: string }>();
-  console.log("Project ID from URL:", id); // asigură-te că vezi un ID real
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const API_BASE_URL = "http://localhost:5000";
 
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/projects/${id}`);
+        const res = await fetch(`http://localhost:5000/api/projects/${id}`);
         const data = await res.json();
-        const mapped: Project = {
-          id: data._id,
-          title: data.name,
-          description: data.description,
-          infoPackUrl: data.infoPackUrl
-            ? `${API_BASE_URL}${data.infoPackUrl}`
-            : undefined,
-          startDate: data.startDate,
-          endDate: data.endDate,
-          deadline: data.deadline,
-          location: data.location,
-          country: data.country,
-          domain: data.domain,
-          host: {
-            id: data.host?._id,
-            name: data.host?.name,
-          },
-        };
-        setProject(mapped);
+        setProject(data);
       } catch (err) {
         console.error("Failed to load project:", err);
       } finally {
@@ -73,7 +63,7 @@ const ProjectProfilePage = () => {
 
   return (
     <div className="container py-5">
-      <h1>{project.title}</h1>
+      <h1>{project.name}</h1>
 
       <p className="text-muted">
         <strong>Domain:</strong> {project.domain} &nbsp;
@@ -82,16 +72,22 @@ const ProjectProfilePage = () => {
 
       <p>{project.description}</p>
 
-      {project.infoPackUrl && (
-        <div className="mb-4">
-          <h5>InfoPack</h5>
-          <iframe
-            src={project.infoPackUrl}
-            title="InfoPack"
-            width="100%"
-            height="600px"
-            style={{ border: "1px solid #ccc", borderRadius: "8px" }}
-          />
+      {project.coverImageUrl && (
+        <img
+          src={project.coverImageUrl}
+          alt="Cover"
+          className="img-fluid rounded shadow-sm mb-4"
+        />
+      )}
+
+      {project.objectives && project.objectives.length > 0 && (
+        <div className="mb-3">
+          <h5>Objectives</h5>
+          <ul>
+            {project.objectives.map((obj, idx) => (
+              <li key={idx}>{obj}</li>
+            ))}
+          </ul>
         </div>
       )}
 
@@ -110,11 +106,83 @@ const ProjectProfilePage = () => {
             {new Date(project.deadline).toLocaleDateString()}
           </p>
         )}
+        {project.targetAudience && (
+          <p>
+            <strong>Target group:</strong> {project.targetAudience}
+          </p>
+        )}
       </div>
 
-      {isBeforeDeadline ? (
-        <Button variant="success" size="lg">
-          Apply now
+      {project.infoPackUrl && (
+        <div className="mb-4">
+          <Button
+            variant="outline-primary"
+            href={project.infoPackUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            📄 See the InfoPack
+          </Button>
+        </div>
+      )}
+
+      <div className="mb-4">
+        <h5>Host Organisation</h5>
+        {project.host && (
+          <Card className="p-3 shadow-sm">
+            <Card.Body>
+              <Card.Title>
+                <Link to={`/organisations/${project.host._id}`}>
+                  {project.host.name}
+                </Link>
+              </Card.Title>
+              {project.host.logo && (
+                <img
+                  src={project.host.logo}
+                  alt={project.host.name}
+                  style={{ height: "50px" }}
+                />
+              )}
+            </Card.Body>
+          </Card>
+        )}
+      </div>
+
+      {project.partners && project.partners.length > 0 && (
+        <div className="mb-4">
+          <h5>Partners</h5>
+          {project.partners.map((partner, idx) => (
+            <Card key={idx} className="mb-2 p-2">
+              <Card.Body>
+                <p>
+                  <strong>Instagram:</strong> {partner.instagram}
+                </p>
+                <p>
+                  <strong>Country:</strong> {partner.country}
+                </p>
+                {partner.organisationRef && (
+                  <p>
+                    <strong>Organisation:</strong>{" "}
+                    <Link to={`/organisations/${partner.organisationRef._id}`}>
+                      {partner.organisationRef.name}
+                    </Link>
+                  </p>
+                )}
+              </Card.Body>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {isBeforeDeadline && project.applyUrl ? (
+        <Button
+          variant="success"
+          size="lg"
+          href={project.applyUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Apply Here
         </Button>
       ) : (
         <Button variant="secondary" size="lg" disabled>

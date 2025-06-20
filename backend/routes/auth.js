@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { sendVerificationEmail } from "../utils/mailer.js";
+import Project from "../models/Project.js";
 
 const router = express.Router();
 // routhes/auth.js
@@ -79,6 +80,14 @@ router.post("/finalize", async (req, res) => {
 
     if (!pendingOrg) return res.status(400).json({ error: "Invalid token" });
 
+    // 🔍 Caută proiectele în care partenerul apare cu acel Instagram
+    let matchedProjects = [];
+    if (socialMedia?.instagram) {
+      matchedProjects = await Project.find({
+        "partners.instagram": socialMedia.instagram,
+      });
+    }
+
     const finalOrg = new Organisation({
       name: pendingOrg.name,
       logo: pendingOrg.logo,
@@ -91,9 +100,12 @@ router.post("/finalize", async (req, res) => {
       domains,
       socialMedia,
       isVerified: true,
+      // 🧠 Populate automat pe baza Instagramului
+      partnerIn: matchedProjects.map((p) => p._id),
     });
 
-    await finalOrg.save(); // acum e mutată
+    await finalOrg.save();
+
     await PendingOrganisation.deleteOne({ _id: pendingOrg._id });
 
     res.status(200).json({ message: "Organisation registered and verified!" });
@@ -102,7 +114,7 @@ router.post("/finalize", async (req, res) => {
   }
 });
 
-// ✅ LOGIN
+// ✅ LOGIN - cu cookie
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -121,17 +133,33 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ id: org._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
-    res.json({
-      token,
-      logo: org.logo,
-      name: org.name,
-      id: org._id,
-    });
 
-    res.json({ token });
+    res
+      .cookie("authToken", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "Lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 zile
+      })
+      .json({
+        message: "Login successful",
+        logo: org.logo,
+        name: org.name,
+        id: org._id,
+      });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// ✅ LOGOUT - șterge cookie-ul
+router.post("/logout", (req, res) => {
+  res.clearCookie("authToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Lax",
+  });
+  res.json({ message: "Logged out successfully" });
 });
 
 export default router;
