@@ -6,6 +6,10 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { sendVerificationEmail } from "../utils/mailer.js";
 import Project from "../models/Project.js";
+import multer from "multer";
+import fs from "fs";
+
+const upload = multer({ dest: "temp/" });
 
 const router = express.Router();
 // routhes/auth.js
@@ -60,7 +64,6 @@ router.get("/verify", async (req, res) => {
     // NU mutăm încă organizația în baza de date finală!
     res.status(200).json({
       name: pendingOrg.name,
-      logo: pendingOrg.logo,
       email: pendingOrg.contact.email,
     });
   } catch (err) {
@@ -69,7 +72,7 @@ router.get("/verify", async (req, res) => {
 });
 
 // ✅ FINALIZE REGISTRATION
-router.post("/finalize", async (req, res) => {
+router.post("/finalize", upload.single("logo"), async (req, res) => {
   const token = req.query.token;
   const { description, domains, socialMedia, phone } = req.body;
 
@@ -80,7 +83,15 @@ router.post("/finalize", async (req, res) => {
 
     if (!pendingOrg) return res.status(400).json({ error: "Invalid token" });
 
-    // 🔍 Caută proiectele în care partenerul apare cu acel Instagram
+    let logoUrl = null;
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "ong_network/logos",
+      });
+      logoUrl = result.secure_url;
+      fs.unlinkSync(req.file.path);
+    }
+
     let matchedProjects = [];
     if (socialMedia?.instagram) {
       matchedProjects = await Project.find({
@@ -90,7 +101,7 @@ router.post("/finalize", async (req, res) => {
 
     const finalOrg = new Organisation({
       name: pendingOrg.name,
-      logo: pendingOrg.logo,
+      logo: logoUrl || pendingOrg.logo,
       password: pendingOrg.password,
       contact: {
         email: pendingOrg.contact.email,
@@ -100,12 +111,10 @@ router.post("/finalize", async (req, res) => {
       domains,
       socialMedia,
       isVerified: true,
-      // 🧠 Populate automat pe baza Instagramului
       partnerIn: matchedProjects.map((p) => p._id),
     });
 
     await finalOrg.save();
-
     await PendingOrganisation.deleteOne({ _id: pendingOrg._id });
 
     res.status(200).json({ message: "Organisation registered and verified!" });

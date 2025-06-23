@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 const organisationSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    logo: { type: String, required: true },
+    logo: { type: String },
     baseCountry: {
       type: String,
       enum: [
@@ -52,14 +52,6 @@ const organisationSchema = new mongoose.Schema(
       instagram: { type: String },
       website: { type: String },
     },
-    coordinators: [
-      {
-        name: { type: String, required: false },
-        photo: { type: String },
-        role: { type: String },
-        email: { type: String },
-      },
-    ],
     hostedProjects: [
       {
         type: mongoose.Schema.Types.ObjectId,

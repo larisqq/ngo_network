@@ -6,7 +6,6 @@ import organisationRoutes from "./routes/organisations.js";
 import projectRoutes from "./routes/projects.js";
 import authRoutes from "./routes/auth.js";
 import dotenv from "dotenv";
-import cloudinary from "./config/cloudinaryConfig.js";
 import uploadRoutes from "./routes/uploads.js";
 import cookieParser from "cookie-parser";
 
@@ -17,8 +16,8 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // frontend-ul tău
-    credentials: true, // permite cookie-urile
+    origin: "http://localhost:5173",
+    credentials: true,
   })
 );
 

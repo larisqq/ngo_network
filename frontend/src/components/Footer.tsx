@@ -1,73 +1,74 @@
+// Footer.tsx
 import { Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { FaEnvelope, FaExternalLinkAlt } from "react-icons/fa";
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
+  const year = new Date().getFullYear();
 
   return (
-    <footer
-      style={{ backgroundColor: "#2b6777", color: "#ffffff" }}
-      className="py-5 mt-auto"
-    >
+    <footer className="bg-dark text-light pt-5 pb-3 mt-auto">
       <Container>
-        <Row>
-          <Col md={6}>
-            <h5 style={{ color: "#ffffff" }}>NGO Network</h5>
-            <p className="small mb-0" style={{ color: "#f2f2f2" }}>
+        <Row className="mb-4">
+          <Col md={4} className="text-center text-md-start">
+            <img
+              src="/cv2.png"
+              alt="NGO Logo"
+              style={{ width: "80px", borderRadius: "50%" }}
+              className="mb-2"
+            />
+            <h5 className="fw-bold">NGO Network</h5>
+            <p>
               A platform dedicated to connecting Erasmus+ organizations across
               Europe.
             </p>
           </Col>
 
-          <Col md={3}>
-            <h6 style={{ color: "#ffffff" }}>Quick Links</h6>
+          <Col md={4}>
+            <h6 className="fw-bold">Quick Links</h6>
             <ul className="list-unstyled">
               <li>
                 <Link
                   to="/projects"
-                  style={{ color: "#f2f2f2", textDecoration: "none" }}
+                  className="text-light text-decoration-none"
                 >
-                  Projects
+                  Projects <FaExternalLinkAlt size={12} className="ms-1" />
                 </Link>
               </li>
               <li>
                 <Link
                   to="/organisations"
-                  style={{ color: "#f2f2f2", textDecoration: "none" }}
+                  className="text-light text-decoration-none"
                 >
-                  Organisations
+                  Organisations <FaExternalLinkAlt size={12} className="ms-1" />
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/login"
-                  style={{ color: "#f2f2f2", textDecoration: "none" }}
-                >
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/signup"
-                  style={{ color: "#f2f2f2", textDecoration: "none" }}
-                >
-                  Sign Up
+                <Link to="/about" className="text-light text-decoration-none">
+                  About Erasmus+{" "}
+                  <FaExternalLinkAlt size={12} className="ms-1" />
                 </Link>
               </li>
             </ul>
           </Col>
 
-          <Col md={3}>
-            <h6 style={{ color: "#ffffff" }}>Contact</h6>
-            <p className="mb-1" style={{ color: "#f2f2f2" }}>
-              Email: contact@ongnetwork.org
+          <Col md={4}>
+            <h6 className="fw-bold">Contact</h6>
+            <p>
+              <FaEnvelope className="me-2" />
+              <a
+                href="mailto:contact@ongnetwork.org"
+                className="text-light text-decoration-none"
+              >
+                contact@ongnetwork.org
+              </a>
             </p>
           </Col>
         </Row>
 
-        <hr style={{ borderColor: "#c8d8e4" }} className="mt-4" />
-        <p className="text-center mb-0 small" style={{ color: "#f2f2f2" }}>
-          &copy; {currentYear} ONG Network. All rights reserved.
+        <hr className="border-light" />
+        <p className="text-center small mb-0">
+          &copy; {year} NGO Network. All rights reserved.
         </p>
       </Container>
     </footer>

@@ -20,6 +20,10 @@ const AddProjectPage = () => {
     host: "",
     objectives: [""],
     partners: [] as Partner[],
+    period: {
+      start: "",
+      end: "",
+    },
   });
 
   const [coverImage, setCoverImage] = useState<File | null>(null);
@@ -27,6 +31,20 @@ const AddProjectPage = () => {
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+
+  const uploadCoverImage = async (file: File): Promise<string> => {
+    const form = new FormData();
+    form.append("image", file);
+
+    const res = await fetch("http://localhost:5000/api/uploads", {
+      method: "POST",
+      body: form,
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to upload cover image");
+    return data.url;
+  };
 
   useEffect(() => {
     const fetchOrganisation = async () => {
@@ -87,17 +105,7 @@ const AddProjectPage = () => {
       let coverImageUrl = formData.coverImageUrl;
 
       if (coverImage) {
-        const imgData = new FormData();
-        imgData.append("image", coverImage);
-
-        const res = await fetch("http://localhost:5000/api/uploads", {
-          method: "POST",
-          body: imgData,
-        });
-
-        const img = await res.json();
-        if (!res.ok) throw new Error("Cover upload failed");
-        coverImageUrl = img.url;
+        coverImageUrl = await uploadCoverImage(coverImage);
       }
 
       const payload = {
@@ -105,6 +113,10 @@ const AddProjectPage = () => {
         coverImageUrl,
         objectives: formData.objectives,
         partners: formData.partners,
+        period: {
+          start: formData.period.start,
+          end: formData.period.end,
+        },
       };
 
       const res = await fetch("http://localhost:5000/api/projects", {
@@ -131,6 +143,10 @@ const AddProjectPage = () => {
         host: formData.host,
         objectives: [""],
         partners: [],
+        period: {
+          start: "",
+          end: "",
+        },
       });
       setCoverImage(null);
     } catch (err: any) {
@@ -192,6 +208,37 @@ const AddProjectPage = () => {
           <Button variant="secondary" type="button" onClick={addObjective}>
             + Add Objective
           </Button>
+        </Form.Group>
+        {/* Period Start */}
+        <Form.Group className="mb-3">
+          <Form.Label>Start Date</Form.Label>
+          <Form.Control
+            type="date"
+            value={formData.period.start}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                period: { ...prev.period, start: e.target.value },
+              }))
+            }
+            required
+          />
+        </Form.Group>
+
+        {/* Period End */}
+        <Form.Group className="mb-3">
+          <Form.Label>End Date</Form.Label>
+          <Form.Control
+            type="date"
+            value={formData.period.end}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                period: { ...prev.period, end: e.target.value },
+              }))
+            }
+            required
+          />
         </Form.Group>
 
         {/* Deadline */}
@@ -270,6 +317,11 @@ const AddProjectPage = () => {
             <option value="well-being">Well-being</option>
             <option value="digital">Digital</option>
             <option value="culture">Culture</option>
+            <option value="youth">Youth</option>
+            <option value="inclusion">Inclusion</option>
+            <option value="sports">Sports</option>
+            <option value="health">Health</option>
+            <option value="social">Social</option>
           </Form.Select>
         </Form.Group>
 
@@ -312,6 +364,15 @@ const AddProjectPage = () => {
               setCoverImage((e.target as HTMLInputElement).files?.[0] || null)
             }
           />
+          {coverImage && (
+            <div className="mb-3">
+              <img
+                src={URL.createObjectURL(coverImage)}
+                alt="Cover preview"
+                style={{ maxHeight: "200px", borderRadius: "0.5rem" }}
+              />
+            </div>
+          )}
         </Form.Group>
 
         {/* Submit */}

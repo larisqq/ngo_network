@@ -1,20 +1,30 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import * as AOS from "aos";
+import "aos/dist/aos.css";
+
 import Navbar from "./components/Navbar";
-import HomePage from "./pages/HomePage"; // dacă ai o pagină de tip landing/home
+import Footer from "./components/Footer";
+
+import HomePage from "./pages/HomePage";
 import OrganisationsPage from "./pages/Orgs";
 import ProjectsPage from "./pages/ProjectsPage";
-import OrganisationProfile from "./pages/OrgProfile"; // pagină individuală ONG
-import ProjectProfilePage from "./pages/ProjectProfilePage"; // pagină individuală proiect
+import OrganisationProfile from "./pages/OrgProfile";
+import ProjectProfilePage from "./pages/ProjectProfilePage";
 import AddProjectPage from "./pages/AddProjectPage";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
-import VerifyPage from "./pages/VerifyPage"; // pagină pentru verificarea contului
-import Footer from "./components/Footer"; // presupunând că ai un component Footer
-import EditProfile from "./pages/EditProfilePage"; // pagină pentru editarea profilului utilizatorului
-import AboutPage from "./pages/AboutPage"; // pagină despre erasmus
+import VerifyPage from "./pages/VerifyPage";
+import EditProfile from "./pages/EditProfilePage";
+import AboutPage from "./pages/AboutPage";
+
 import "./App.css";
 
 function App() {
+  useEffect(() => {
+    AOS.init({ duration: 800 });
+  }, []);
+
   return (
     <Router>
       <Navbar />

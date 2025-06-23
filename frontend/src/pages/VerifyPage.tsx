@@ -9,6 +9,10 @@ const VerifyPage = () => {
 
   const [tokenValid, setTokenValid] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+
   const [formData, setFormData] = useState({
     description: "",
     domains: "",
@@ -17,10 +21,7 @@ const VerifyPage = () => {
     facebook: "",
     instagram: "",
   });
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
-  // Verificarea token-ului
   useEffect(() => {
     if (!token) {
       setError("No token provided.");
@@ -32,7 +33,6 @@ const VerifyPage = () => {
       .then(async (res) => {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Verification failed");
-
         setTokenValid(true);
       })
       .catch((err) => {
@@ -41,7 +41,6 @@ const VerifyPage = () => {
       .finally(() => setLoading(false));
   }, [token]);
 
-  // Redirecționează la login după 3 secunde
   useEffect(() => {
     if (message) {
       const timeout = setTimeout(() => {
@@ -51,14 +50,26 @@ const VerifyPage = () => {
     }
   }, [message, navigate]);
 
-  // Handle input change
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Finalizează înregistrarea
+  const uploadLogoToCloudinary = async (file: File) => {
+    const form = new FormData();
+    form.append("image", file);
+
+    const res = await fetch("http://localhost:5000/api/uploads", {
+      method: "POST",
+      body: form,
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to upload logo");
+    return data.url;
+  };
+
   const handleRegister = async () => {
     if (!token) {
       setError("Missing token.");
@@ -67,6 +78,11 @@ const VerifyPage = () => {
 
     try {
       setLoading(true);
+
+      let logoUrl = null;
+      if (logoFile) {
+        logoUrl = await uploadLogoToCloudinary(logoFile);
+      }
 
       const payload = {
         description: formData.description,
@@ -77,6 +93,7 @@ const VerifyPage = () => {
           facebook: formData.facebook || null,
           instagram: formData.instagram,
         },
+        logo: logoUrl,
       };
 
       const response = await fetch(
@@ -100,7 +117,6 @@ const VerifyPage = () => {
     }
   };
 
-  // Afișări condiționale
   if (loading) return <Spinner animation="border" className="m-5" />;
   if (error)
     return (
@@ -122,7 +138,6 @@ const VerifyPage = () => {
       </Alert>
     );
 
-  // Form pentru completarea profilului
   return (
     <div className="container my-5">
       <h2>Complete Organisation Profile</h2>
@@ -157,7 +172,6 @@ const VerifyPage = () => {
             value={formData.phone}
             onChange={handleChange}
             placeholder="+40 x xxx xxx xxx"
-            pattern="^\+?\d{0,3}\s?\d{1,4}\s?\d{1,4}\s?\d{1,4}\s?\d{1,4}$"
           />
         </Form.Group>
 
@@ -180,9 +194,7 @@ const VerifyPage = () => {
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label>
-            Instagram <span className="text-danger">*</span>
-          </Form.Label>
+          <Form.Label>Instagram</Form.Label>
           <Form.Control
             name="instagram"
             value={formData.instagram}
@@ -190,6 +202,28 @@ const VerifyPage = () => {
             required
           />
         </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Logo Image</Form.Label>
+          <Form.Control
+            type="file"
+            accept="image/*"
+            onChange={(e) =>
+              setLogoFile((e.target as HTMLInputElement).files?.[0] || null)
+            }
+            required
+          />
+        </Form.Group>
+
+        {logoFile && (
+          <div className="mb-3">
+            <img
+              src={URL.createObjectURL(logoFile)}
+              alt="Logo preview"
+              style={{ maxWidth: "150px", maxHeight: "150px" }}
+            />
+          </div>
+        )}
 
         <Button variant="primary" onClick={handleRegister}>
           Finalize Registration

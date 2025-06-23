@@ -13,6 +13,8 @@ const EditProfilePage = () => {
     coordinators: [{ name: "", photo: "", role: "", email: "" }],
   });
 
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
@@ -23,7 +25,7 @@ const EditProfilePage = () => {
     const fetchProfile = async () => {
       try {
         const res = await fetch("http://localhost:5000/api/organisations/me", {
-          credentials: "include", // ✅ trimite cookie-ul cu JWT
+          credentials: "include",
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to load profile");
@@ -36,7 +38,7 @@ const EditProfilePage = () => {
     };
 
     fetchProfile();
-  }, []); //
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -61,6 +63,20 @@ const EditProfilePage = () => {
     }));
   };
 
+  const uploadLogo = async (file: File): Promise<string> => {
+    const form = new FormData();
+    form.append("image", file);
+
+    const res = await fetch("http://localhost:5000/api/uploads", {
+      method: "POST",
+      body: form,
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to upload logo");
+    return data.url;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -68,6 +84,12 @@ const EditProfilePage = () => {
     setError("");
 
     try {
+      let logoUrl = formData.logo;
+
+      if (logoFile) {
+        logoUrl = await uploadLogo(logoFile);
+      }
+
       const res = await fetch(
         "http://localhost:5000/api/organisations/update",
         {
@@ -75,8 +97,8 @@ const EditProfilePage = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include", // ✅ trimite cookie-ul
-          body: JSON.stringify(formData),
+          credentials: "include",
+          body: JSON.stringify({ ...formData, logo: logoUrl }),
         }
       );
 
@@ -84,6 +106,8 @@ const EditProfilePage = () => {
       if (!res.ok) throw new Error(data.error || "Failed to update profile");
 
       setSuccess("Profile updated successfully!");
+      setFormData((prev) => ({ ...prev, logo: logoUrl }));
+      setLogoFile(null);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -115,15 +139,6 @@ const EditProfilePage = () => {
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label>Logo (URL)</Form.Label>
-          <Form.Control
-            name="logo"
-            value={formData.logo || ""}
-            onChange={handleChange}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
           <Form.Label>Description</Form.Label>
           <Form.Control
             as="textarea"
@@ -132,6 +147,38 @@ const EditProfilePage = () => {
             onChange={handleChange}
           />
         </Form.Group>
+
+        {/* ✅ Logo */}
+        <Form.Group className="mb-3">
+          <Form.Label>Logo</Form.Label>
+          <Form.Control
+            type="file"
+            accept="image/*"
+            onChange={(e) =>
+              setLogoFile((e.target as HTMLInputElement).files?.[0] || null)
+            }
+          />
+        </Form.Group>
+
+        {formData.logo && !logoFile && (
+          <div className="mb-3">
+            <img
+              src={formData.logo}
+              alt="Current logo"
+              style={{ maxHeight: "150px" }}
+            />
+          </div>
+        )}
+
+        {logoFile && (
+          <div className="mb-3">
+            <img
+              src={URL.createObjectURL(logoFile)}
+              alt="New logo preview"
+              style={{ maxHeight: "150px" }}
+            />
+          </div>
+        )}
 
         <Form.Group className="mb-3">
           <Form.Label>Email</Form.Label>

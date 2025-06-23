@@ -28,7 +28,7 @@ router.get("/:id", async (req, res) => {
   try {
     const project = await Project.findById(req.params.id)
       .populate("host", "name _id logo")
-      .populate("partners.organisationRef", "name _id");
+      .populate("partners.organisationRef", "name");
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
@@ -41,8 +41,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST /api/projects – fără upload pentru InfoPack
-router.post("/", upload.single("coverImage"), async (req, res) => {
+// POST /api/projects - adaugă un nou proiect
+router.post("/", async (req, res) => {
   try {
     const {
       name,
@@ -55,15 +55,14 @@ router.post("/", upload.single("coverImage"), async (req, res) => {
       deadline,
       host,
       infoPackUrl,
+      coverImageUrl, // direct string din formular
       targetAudience,
       applyUrl,
       objectives,
       partners,
     } = req.body;
 
-    let coverImageUrl = null;
-
-    // ✅ Upload cover image
+    // Upload cover image
     if (req.file) {
       const imageUpload = await cloudinary.uploader.upload(req.file.path, {
         folder: "ong_network/covers",
@@ -93,7 +92,7 @@ router.post("/", upload.single("coverImage"), async (req, res) => {
     await newProject.save();
     res.status(201).json(newProject);
   } catch (err) {
-    console.error("❌ Error uploading project:", err);
+    console.error("Error uploading project:", err);
     res.status(500).json({ error: err.message || "Server error" });
   }
 });

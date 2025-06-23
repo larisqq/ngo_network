@@ -1,10 +1,26 @@
+body, html, #root {
+  height: 100%;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container {
+  flex: 1;
+}
+
+
+
 /* Card Hover Effect */
 .card {
   transition: transform 0.2s ease, box-shadow 0.3s ease-in-out;
 }
 
 .card:hover {
-  transform: translateY(-8px) scale(1.05); /* Cardul crește ușor și se ridică */
+  transform: translateY(-3px) scale(1.02); /* Cardul crește ușor și se ridică */
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1); /* Adăugăm o umbră pentru a crea adâncire */
   cursor: pointer;
 }
@@ -44,39 +60,98 @@
   box-shadow: 0 0 0 3px rgba(42, 103, 119, 0.5); /* Adăugăm o umbră subtilă în jurul butonului când este selectat */
 }
 
-/* Navbar */
+/* Navbar modern și animat */
 .navbar {
-  background: linear-gradient(45deg, #2b6777, #352ab9); /* Gradient modern pentru navbar */
+  background: linear-gradient(90deg, #2b6777, #352ab9);
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Umbra mai mare pentru navbar */
-  padding: 12px 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 14px 30px;
   position: sticky;
   top: 0;
   z-index: 1000;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 8px; /* Colțuri rotunjite pentru navbar */
+  border-radius: 0 0 12px 12px;
 }
 
-.navbar a {
-  color: #ffffff;
-  text-decoration: none;
-  padding: 8px 15px;
+.navbar {
+  transition: background-color 0.3s ease;
+}
+
+.navbar:hover {
+  background-color: rgba(43, 103, 119, 1) !important;
+}
+
+/* Linkuri din navbar */
+.navbar-nav .nav-link {
+  color: #ffffff !important;
+  font-weight: 500;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #c8d8e4 !important;
   border-radius: 5px;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.navbar a:hover {
-  background-color: #352ab9;
+/* Dropdown custom */
+.dropdown-menu {
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.dropdown-item {
+  color: #2b6777;
+  font-weight: 500;
+  padding: 10px 16px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f4f8;
+  color: #352ab9;
+}
+
+
+/*FOOTER
+--------------------------------------------------*/
+
+footer {
+  background: linear-gradient(90deg, #2b6777, #352ab9);
+  color: #ffffff;
+  padding: 60px 0 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+footer h5, footer h6 {
+  font-weight: 600;
   color: #ffffff;
 }
 
-.navbar .logo {
-  font-size: 1.5em;
-  font-weight: bold;
-  color: #ffffff;
+footer a {
+  color: #f2f2f2;
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
+
+footer a:hover {
+  color: #c8d8e4;
+}
+
+.footer-logo {
+  max-width: 80px;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.footer-logo:hover {
+  transform: scale(1.1);
+}
+
+
 
 /* Adăugăm un efect pentru logo când utilizatorul plasează mouse-ul pe el */
 .navbar .logo:hover {

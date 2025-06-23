@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import { Spinner, Alert, Badge, ListGroup } from "react-bootstrap";
+import {
+  Spinner,
+  Alert,
+  Badge,
+  ListGroup,
+  Card,
+  Button,
+} from "react-bootstrap";
+import { FaInstagram, FaFacebook } from "react-icons/fa";
 
 interface ProjectPreview {
   id: string;
@@ -14,6 +22,11 @@ interface Organisation {
   id: string;
   name: string;
   logo: string;
+  socialMedia?: {
+    instagram?: string;
+    facebook?: string;
+    website?: string;
+  };
   description: string;
   domains: string[];
   hostedProjects: ProjectPreview[];
@@ -63,31 +76,62 @@ const OrganisationProfile = () => {
 
   return (
     <div className="container py-5">
-      <div className="row">
-        {/* LEFT: Organisation Info */}
-        <div className="col-md-4 mb-4">
-          <div className="card sticky-top" style={{ top: "20px" }}>
-            <img
-              src={org.logo}
-              alt={`${org.name} logo`}
-              className="card-img-top p-3"
-            />
-            <div className="card-body">
-              <h2 className="h4">{org.name}</h2>
-              <div className="mb-3">
-                {org.domains.map((domain) => (
-                  <Badge key={domain} bg="primary" className="me-1">
-                    {domain}
-                  </Badge>
-                ))}
+      {/* Rând cu card și spațiu gol */}
+      <div className="row mb-4">
+        <div className="col-12">
+          <Card className="p-3">
+            <div className="d-flex align-items-start">
+              <img
+                src={org.logo}
+                alt={`${org.name} logo`}
+                className="img-fluid me-3"
+                style={{ maxWidth: "120px", borderRadius: "0.5rem" }}
+              />
+              <div>
+                <h2 className="h5">{org.name}</h2>
+                <p>{org.description}</p>
+                <div className="mb-3">
+                  {org.domains.map((domain) => (
+                    <Badge key={domain} bg="primary" className="me-1">
+                      {domain}
+                    </Badge>
+                  ))}
+                </div>
+                <div className="d-flex gap-2">
+                  {org.socialMedia?.instagram && (
+                    <a
+                      href={`https://instagram.com/${org.socialMedia.instagram}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-outline-danger btn-sm d-flex align-items-center"
+                    >
+                      <FaInstagram className="me-1" />
+                      Instagram
+                    </a>
+                  )}
+                  {org.socialMedia?.facebook && (
+                    <a
+                      href={`https://facebook.com/${org.socialMedia.facebook}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-outline-primary btn-sm d-flex align-items-center"
+                    >
+                      <FaFacebook className="me-1" />
+                      Facebook
+                    </a>
+                  )}
+                </div>
               </div>
-              <p className="card-text">{org.description}</p>
             </div>
-          </div>
+          </Card>
         </div>
 
-        {/* RIGHT: Projects */}
-        <div className="col-md-8">
+        <div className="col-md-8">{/* spațiu gol */}</div>
+      </div>
+
+      {/* Proiectele dedesubt */}
+      <div className="row">
+        <div className="col-12">
           {/* Hosted Projects */}
           <div className="card mb-4">
             <div className="card-header bg-primary text-white">

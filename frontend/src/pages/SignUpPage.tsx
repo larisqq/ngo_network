@@ -6,6 +6,7 @@ const SignUpPage = () => {
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
     logo: "",
   });
 
@@ -17,28 +18,58 @@ const SignUpPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const isStrongPassword = (password: string) => {
+    const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    return strongRegex.test(password);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setErrorMsg("");
     setSuccessMsg("");
+
+    // Validare parolă puternică
+    if (!isStrongPassword(formData.password)) {
+      setErrorMsg(
+        "Password must be at least 8 characters long and include a capital letter, lowercase letter, number and symbol."
+      );
+      return;
+    }
+
+    // Verificare confirmare parolă
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMsg("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const response = await fetch("http://localhost:5000/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          logo: formData.logo,
+        }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        // Afișează mesajul de eroare exact din backend, dacă există
         throw new Error(data.error || "Signup failed");
       }
 
       setSuccessMsg("Verification email sent! Please check your inbox.");
-      setFormData({ name: "", email: "", password: "", logo: "" });
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        logo: "",
+      });
     } catch (err: any) {
       setErrorMsg(err.message || "Something went wrong.");
     } finally {
@@ -66,16 +97,6 @@ const SignUpPage = () => {
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label>Organisation Logo (URL)</Form.Label>
-          <Form.Control
-            type="text"
-            name="logo"
-            value={formData.logo}
-            onChange={handleChange}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
           <Form.Label>Email Address</Form.Label>
           <Form.Control
             type="email"
@@ -93,6 +114,17 @@ const SignUpPage = () => {
             type="password"
             name="password"
             value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Control
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
             onChange={handleChange}
             required
           />
