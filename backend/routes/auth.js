@@ -1,3 +1,4 @@
+// File: backend/routes/auth.js
 import express from "express";
 import Organisation from "../models/Organisation.js";
 import PendingOrganisation from "../models/PendingOrganisation.js";
@@ -12,10 +13,10 @@ import fs from "fs";
 const upload = multer({ dest: "temp/" });
 
 const router = express.Router();
-// routhes/auth.js
+
 // ✅ SIGNUP - doar dacă emailul nu există în ambele colecții
 router.post("/signup", async (req, res) => {
-  const { name, email, password, logo } = req.body;
+  const { name, email, password, logo, baseCountry, instagram } = req.body;
 
   try {
     const existingOrg = await Organisation.findOne({ "contact.email": email });
@@ -35,7 +36,11 @@ router.post("/signup", async (req, res) => {
       logo,
       password: hashedPassword,
       contact: { email },
+      socialMedia: {
+        instagram: instagram, // ✅ Instagram handle salvat direct
+      },
       verificationToken: token,
+      baseCountry,
     });
 
     await pendingOrg.save();
@@ -46,7 +51,7 @@ router.post("/signup", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-// Veche (greșită):
+
 // router.get("/verify/:token", async (req, res) => {
 
 router.get("/verify", async (req, res) => {
@@ -71,7 +76,7 @@ router.get("/verify", async (req, res) => {
   }
 });
 
-// ✅ FINALIZE REGISTRATION
+// ✅ FINALIZE REGISTRATION - updated version (instagram-only)
 router.post("/finalize", upload.single("logo"), async (req, res) => {
   const token = req.query.token;
   const { description, domains, socialMedia, phone } = req.body;
@@ -92,33 +97,67 @@ router.post("/finalize", upload.single("logo"), async (req, res) => {
       fs.unlinkSync(req.file.path);
     }
 
-    let matchedProjects = [];
-    if (socialMedia?.instagram) {
-      matchedProjects = await Project.find({
-        "partners.instagram": socialMedia.instagram,
-      });
-    }
-
+    // 🧠 Creează ONG-ul final
     const finalOrg = new Organisation({
       name: pendingOrg.name,
       logo: logoUrl || pendingOrg.logo,
       password: pendingOrg.password,
+      baseCountry: pendingOrg.baseCountry,
       contact: {
         email: pendingOrg.contact.email,
         phone: phone || null,
       },
       description,
       domains,
-      socialMedia,
+      socialMedia: {
+        instagram: pendingOrg.socialMedia.instagram, // preia Instagram din pending
+        ...socialMedia, // adaugă restul social media
+      },
       isVerified: true,
-      partnerIn: matchedProjects.map((p) => p._id),
+      partnerIn: [], // se completează imediat mai jos
     });
 
+    // 🔍 Caută proiecte cu partener care are același Instagram
+    const affectedProjects = await Project.find({
+      "partners.instagram": pendingOrg.socialMedia.instagram,
+    });
+
+    console.log(`📌 Found ${affectedProjects.length} matching projects`);
+
+    const updatedProjectIds = [];
+
+    for (const project of affectedProjects) {
+      let updated = false;
+
+      project.partners.forEach((partner) => {
+        if (
+          partner.instagram === socialMedia.instagram &&
+          !partner.organisationRef
+        ) {
+          partner.organisationRef = finalOrg._id;
+          updated = true;
+        }
+      });
+
+      if (updated) {
+        await project.save();
+        updatedProjectIds.push(project._id.toString());
+        console.log(
+          `✅ Updated project ${project.name} with new organisationRef`
+        );
+      }
+    }
+
+    // Adaugă proiectele în care e partener
+    finalOrg.partnerIn = updatedProjectIds;
     await finalOrg.save();
+
+    // 🧼 Curăță pending organisation
     await PendingOrganisation.deleteOne({ _id: pendingOrg._id });
 
     res.status(200).json({ message: "Organisation registered and verified!" });
   } catch (err) {
+    console.error("❌ Finalize error:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -148,7 +187,7 @@ router.post("/login", async (req, res) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "Lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 zile
+        maxAge: 24 * 60 * 60 * 1000, // 1 zi
       })
       .json({
         message: "Login successful",

@@ -3,20 +3,25 @@ import { useEffect } from "react";
 import * as AOS from "aos";
 import "aos/dist/aos.css";
 
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import BackToTop from "./components/BackToTop";
 
 import HomePage from "./pages/HomePage";
 import OrganisationsPage from "./pages/Orgs";
 import ProjectsPage from "./pages/ProjectsPage";
 import OrganisationProfile from "./pages/OrgProfile";
-import ProjectProfilePage from "./pages/ProjectProfilePage";
-import AddProjectPage from "./pages/AddProjectPage";
-import SignUpPage from "./pages/SignUpPage";
-import LoginPage from "./pages/LoginPage";
-import VerifyPage from "./pages/VerifyPage";
-import EditProfile from "./pages/EditProfilePage";
+import ProjectProfilePage from "./pages/CrudProject/ProjectProfilePage";
+import AddProjectPage from "./pages/CrudProject/AddProjectPage";
+import SignUpPage from "./pages/Auth/SignUpPage";
+import LoginPage from "./pages/Auth/LoginPage";
+import VerifyPage from "./pages/Auth/VerifyPage";
+import EditProfile from "./pages/CrudOrganisation/EditProfilePage";
 import AboutPage from "./pages/AboutPage";
+import EditProjectPage from "./pages/CrudProject/EditProject";
 
 import "./App.css";
 
@@ -41,8 +46,10 @@ function App() {
           <Route path="/verify" element={<VerifyPage />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/projects/:id/edit" element={<EditProjectPage />} />
         </Routes>
       </div>
+      <BackToTop />
       <Footer />
     </Router>
   );

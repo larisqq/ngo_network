@@ -1,34 +1,19 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [orgId, setOrgId] = useState("");
-  const [orgName, setOrgName] = useState("");
   const navigate = useNavigate();
+  const { currentOrg, setCurrentOrg } = useAuth();
+
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") === "true";
+  });
 
   useEffect(() => {
-    const fetchSession = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/organisations/me", {
-          credentials: "include", // 🔐 cookie-based auth
-        });
-        if (!res.ok) {
-          setIsLoggedIn(false);
-          return;
-        }
-        const data = await res.json();
-        setOrgId(data._id);
-        setOrgName(data.name || "My NGO");
-        setIsLoggedIn(true);
-      } catch (error) {
-        console.error("Error checking session:", error);
-        setIsLoggedIn(false);
-      }
-    };
-
-    fetchSession();
-  }, []);
+    document.body.classList.toggle("dark-mode", darkMode);
+    localStorage.setItem("darkMode", darkMode.toString());
+  }, [darkMode]);
 
   const handleLogout = async () => {
     try {
@@ -36,130 +21,134 @@ const Navbar = () => {
         method: "POST",
         credentials: "include",
       });
-    } catch (err) {
-      console.error("Logout failed:", err);
-    } finally {
-      setIsLoggedIn(false);
-      setOrgId("");
-      setOrgName("");
-      navigate("/");
-      window.location.reload();
-    }
+    } catch {}
+
+    setCurrentOrg(null);
+    navigate("/");
+    window.location.reload();
   };
 
   return (
-    <nav
-      className="navbar navbar-expand-md navbar-dark"
-      style={{ backgroundColor: "#2b6777" }}
-    >
-      <div className="container-fluid">
-        <Link
-          className="navbar-brand me-auto d-flex align-items-center gap-2"
-          to="/"
-        >
+    <nav className="navbar navbar-dark" style={{ backgroundColor: "#2b6777" }}>
+      <div className="container-fluid d-flex align-items-center justify-content-between py-2 px-3">
+        {/* 🔵 Left: Logo + App Name */}
+        <Link className="navbar-brand d-flex align-items-center gap-2" to="/">
           <img
-            src="/cv2.png"
-            alt="Globe Logo"
+            src="/ngo.png"
+            alt="App Logo"
             style={{
-              height: "50px",
-              width: "50px",
-              borderRadius: "70%",
-              objectFit: "contain",
+              height: "45px",
+              width: "45px",
+              borderRadius: "50%",
+              objectFit: "cover",
             }}
           />
-          <span className="fw-bold text-light">NGO NETWORK</span>
+          <span className="fw-bold text-light">NGO Network</span>
         </Link>
 
+        {/* 🧭 Center: Navigation Links */}
+        <ul className="nav gap-3 mx-auto">
+          <li className="nav-item">
+            <Link className="nav-link text-light fw-medium" to="/">
+              Home
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link text-light fw-medium" to="/projects">
+              Opportunities
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link text-light fw-medium" to="/organisations">
+              Organisations
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link text-light fw-medium" to="/about">
+              About Erasmus+
+            </Link>
+          </li>
+        </ul>
+
+        {/* 🌙 Dark Mode Toggle */}
         <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarContent"
+          className={`btn btn-sm ${darkMode ? "btn-light" : "btn-dark"} me-2`}
+          onClick={() => setDarkMode((prev) => !prev)}
+          title="Toggle dark mode"
         >
-          <span className="navbar-toggler-icon"></span>
+          <i className={`bi ${darkMode ? "bi-sun" : "bi-moon"}`}></i>
         </button>
 
-        <div className="collapse navbar-collapse" id="navbarContent">
-          <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link className="nav-link text-light" to="/">
-                HOME
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-light" to="/projects">
-                OPPORTUNITIES
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-light" to="/organisations">
-                ORGANISATIONS
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-light" to="/about">
-                ABOUT ERASMUS+
-              </Link>
-            </li>
-
-            {!isLoggedIn ? (
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link text-light" to="/signup">
-                    Sign Up
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link text-light" to="/login">
-                    Login
-                  </Link>
-                </li>
-              </>
+        {/* 🧾 Right: Auth Section */}
+        {!currentOrg ? (
+          <div className="d-flex gap-2">
+            <Link to="/signup" className="btn btn-outline-light btn-sm">
+              <i className="bi bi-person-plus me-1"></i> Sign Up
+            </Link>
+            <Link to="/login" className="btn btn-outline-light btn-sm">
+              <i className="bi bi-box-arrow-in-right me-1"></i> Login
+            </Link>
+          </div>
+        ) : (
+          <div className="dropdown d-flex align-items-center">
+            {currentOrg.logo ? (
+              <img
+                src={currentOrg.logo}
+                alt="Org Logo"
+                className="rounded-circle me-2"
+                style={{
+                  height: "32px",
+                  width: "32px",
+                  objectFit: "cover",
+                  border: "1px solid white",
+                }}
+              />
             ) : (
-              <li className="nav-item dropdown">
-                <span
-                  className="nav-link dropdown-toggle text-light"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  {orgName || "Account"}
-                </span>
-                <ul className="dropdown-menu dropdown-menu-end">
-                  <li>
-                    <Link
-                      className="dropdown-item"
-                      to={`/organisations/${orgId}`}
-                    >
-                      See Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/edit-profile">
-                      Edit Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/add-project">
-                      Add Project
-                    </Link>
-                  </li>
-                  <li>
-                    <hr className="dropdown-divider" />
-                  </li>
-                  <li>
-                    <button
-                      className="dropdown-item text-danger"
-                      onClick={handleLogout}
-                    >
-                      Logout
-                    </button>
-                  </li>
-                </ul>
-              </li>
+              <i className="bi bi-person-circle text-light fs-4 me-2"></i>
             )}
-          </ul>
-        </div>
+
+            <button
+              className="btn btn-outline-light btn-sm dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              {currentOrg.name}
+            </button>
+
+            <ul className="dropdown-menu dropdown-menu-end shadow-sm">
+              <li>
+                <Link
+                  className="dropdown-item"
+                  to={`/organisations/${currentOrg._id}`}
+                >
+                  <i className="bi bi-person me-2"></i> See Profile
+                </Link>
+              </li>
+              <li>
+                <Link className="dropdown-item" to="/edit-profile">
+                  <i className="bi bi-pencil-square me-2"></i> Edit Profile
+                </Link>
+              </li>
+              <li>
+                <Link className="dropdown-item" to="/add-project">
+                  <i className="bi bi-plus-circle me-2"></i> Add Project
+                </Link>
+              </li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
+              <li>
+                <button
+                  className="dropdown-item text-danger"
+                  onClick={handleLogout}
+                >
+                  <i className="bi bi-box-arrow-right me-2"></i> Logout
+                </button>
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
     </nav>
   );

@@ -1,72 +1,190 @@
-import { Container, Row, Col, Button, Card } from 'react-bootstrap';
+import { useEffect } from "react";
+import { Container, Card, Button } from "react-bootstrap";
+import * as AOS from "aos";
+import "aos/dist/aos.css";
 
 const AboutPage = () => {
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
+
   return (
     <Container className="my-5">
-      <h1 className="mb-4">About Erasmus+</h1>
+      <div className="text-center mb-4" data-aos="fade-up">
+        <h1 className="fw-bold">Erasmus+ Essentials</h1>
+        <p className="lead text-muted">
+          Whether you already run an NGO, want to start one, or just want to get
+          involved in Erasmus+ projects — this page is for you.
+        </p>
+      </div>
 
-      <Card className="mb-4 shadow-sm">
+      {/* What is Erasmus+ */}
+      <Card className="mb-4 shadow-sm border-0" data-aos="fade-up">
         <Card.Body>
-          <Card.Title>What is Erasmus+?</Card.Title>
-          <Card.Text>
-            Erasmus+ is the European Union’s flagship programme supporting education, training, youth, and sport. It enables mobility and cross-border cooperation projects for students, staff, and youth workers.
-          </Card.Text>
-        </Card.Body>
-      </Card>
-
-      <Card className="mb-4 shadow-sm">
-        <Card.Body>
-          <Card.Title>Funding Overview</Card.Title>
-          <Card.Text>
-            Participants can receive travel grants, daily allowances, and additional support based on distance and individual needs. Green travel and inclusion measures are also available.
-          </Card.Text>
-        </Card.Body>
-      </Card>
-
-      <Card className="mb-4 shadow-sm">
-        <Card.Body>
-          <Card.Title>How to Estimate Your Grant</Card.Title>
+          <Card.Title className="fs-4 mb-3">📘 What is Erasmus+?</Card.Title>
           <ul>
-            <li>Use the official EU Distance Calculator to determine your distance band.</li>
-            <li>Check your National Agency’s funding rates (e.g., €180–€360 depending on distance).</li>
-            <li>Daily allowances vary, usually €60–180/day.</li>
-            <li>Green travel: get extra days and/or bonus.</li>
+            <li>EU programme for education, training, youth, and sport.</li>
+            <li>
+              Open to NGOs, educational institutions, local authorities, youth
+              groups, and more.
+            </li>
+            <li>
+              Supports international mobility, job shadowing, youth exchanges,
+              training, strategic partnerships, etc.
+            </li>
           </ul>
-          <Button variant="primary" href="https://erasmus-plus.ec.europa.eu/resources-and-tools/distance-calculator" target="_blank" rel="noopener noreferrer">
-            EU Distance Calculator
-          </Button>
         </Card.Body>
       </Card>
 
-      <Card className="mb-4 shadow-sm">
+      {/* Why it matters for NGOs */}
+      <Card className="mb-4 shadow-sm border-0" data-aos="fade-up">
         <Card.Body>
-          <Card.Title>Grant Simulator</Card.Title>
-          <Card.Text>
-            Use a free simulator to get an idea of your potential funding amount based on your location and project duration.
-          </Card.Text>
-          <Button variant="success" href="https://erasmusgeneration.org/grant-simulator" target="_blank" rel="noopener noreferrer">
-            Erasmus+ Grant Simulator
-          </Button>
-        </Card.Body>
-      </Card>
-
-      <Card className="mb-4 shadow-sm">
-        <Card.Body>
-          <Card.Title>Reimbursement & Timeline</Card.Title>
-          <Card.Text>
-            Most projects require proof of travel and participation. Grants are usually paid in installments (e.g., 70% upfront, 30% after completion). Always coordinate with your National Agency or university.
-          </Card.Text>
-        </Card.Body>
-      </Card>
-
-      <Card className="mb-4 shadow-sm">
-        <Card.Body>
-          <Card.Title>Useful Links</Card.Title>
+          <Card.Title className="fs-4 mb-3">🌟 Why NGOs Should Care</Card.Title>
           <ul>
-            <li><a href="https://erasmus-plus.ec.europa.eu/resources-and-tools/distance-calculator" target="_blank" rel="noopener noreferrer">EU Distance Calculator</a></li>
-            <li><a href="https://erasmus-plus.ec.europa.eu/programme-guide/part-c/financial-conditions" target="_blank" rel="noopener noreferrer">Financial Conditions</a></li>
-            <li><a href="https://wikis.ec.europa.eu/spaces/NAITDOC/pages/139690832/Funded+travel+days+and+Travel+grant+or+Travel+support" target="_blank" rel="noopener noreferrer">Green Travel Info</a></li>
-            <li><a href="https://erasmusgeneration.org/grant-simulator" target="_blank" rel="noopener noreferrer">Grant Simulator</a></li>
+            <li>Access to EU funding for impactful projects.</li>
+            <li>Skill development for staff and volunteers.</li>
+            <li>International networking and recognition.</li>
+            <li>Opportunities to host or send participants abroad.</li>
+            <li>
+              Support for inclusion, digitalization, green transition, and civic
+              participation.
+            </li>
+          </ul>
+        </Card.Body>
+      </Card>
+
+      {/* Types of Actions */}
+      <Card className="mb-4 shadow-sm border-0" data-aos="fade-up">
+        <Card.Body>
+          <Card.Title className="fs-4 mb-3">🔧 Key Erasmus+ Actions</Card.Title>
+          <ul>
+            <li>
+              <strong>KA1</strong> – Mobility: youth exchanges, training
+              courses, job shadowing.
+            </li>
+            <li>
+              <strong>KA2</strong> – Cooperation partnerships on shared themes.
+            </li>
+            <li>
+              <strong>ESC</strong> – European Solidarity Corps: international
+              volunteering.
+            </li>
+            <li>
+              <strong>KA3</strong> – Democratic participation and youth policy
+              initiatives.
+            </li>
+          </ul>
+        </Card.Body>
+      </Card>
+
+      {/* Who Can Apply */}
+      <Card className="mb-4 shadow-sm border-0" data-aos="fade-up">
+        <Card.Body>
+          <Card.Title className="fs-4 mb-3">📝 Who Can Apply?</Card.Title>
+          <ul>
+            <li>Registered NGOs with a tax ID and bank account.</li>
+            <li>Informal youth groups (with a host organization).</li>
+            <li>New NGOs if administrative criteria are met.</li>
+          </ul>
+        </Card.Body>
+      </Card>
+
+      {/* How to Start If You Have an NGO */}
+      <Card className="mb-4 shadow-sm border-0" data-aos="fade-up">
+        <Card.Body>
+          <Card.Title className="fs-4 mb-3">
+            🚀 Getting Started with an NGO
+          </Card.Title>
+          <ul>
+            <li>Register your NGO in the EU Funding & Tenders Portal.</li>
+            <li>Get a PIC (Participant Identification Code).</li>
+            <li>Look for open project calls.</li>
+            <li>Build a consortium (at least 2–3 countries).</li>
+            <li>Write a clear proposal aligned with Erasmus+ priorities.</li>
+          </ul>
+        </Card.Body>
+      </Card>
+
+      {/* How to Join Without an NGO */}
+      <Card className="mb-4 shadow-sm border-0" data-aos="fade-up">
+        <Card.Body>
+          <Card.Title className="fs-4 mb-3">🙋 Join Without an NGO?</Card.Title>
+          <ul>
+            <li>Find local NGOs implementing Erasmus+ projects.</li>
+            <li>Apply as a participant (form, CV, motivation).</li>
+            <li>Join as an ESC volunteer or youth exchange participant.</li>
+            <li>
+              Start an informal youth group and create your own NGO later.
+            </li>
+          </ul>
+        </Card.Body>
+      </Card>
+
+      {/* Resources */}
+      <Card className="mb-4 shadow-sm border-0" data-aos="fade-up">
+        <Card.Body>
+          <Card.Title className="fs-4 mb-3">📚 Useful Resources</Card.Title>
+          <ul>
+            <li>
+              <a
+                href="https://ec.europa.eu/info/funding-tenders"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                EU Funding & Tenders Portal
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://erasmus-plus.ec.europa.eu/resources-and-tools/distance-calculator"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                EU Distance Calculator
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://erasmus-plus.ec.europa.eu/programme-guide"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Erasmus+ Programme Guide
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.salto-youth.net/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                SALTO Resource Portal
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.salto-youth.net/tools/otlas-partner-finding/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Otlas Partner Finding Tool
+              </a>
+            </li>
+          </ul>
+        </Card.Body>
+      </Card>
+
+      {/* Tips */}
+      <Card className="mb-4 shadow-sm border-0" data-aos="fade-up">
+        <Card.Body>
+          <Card.Title className="fs-4 mb-3">💡 Practical Tips</Card.Title>
+          <ul>
+            <li>Watch deadlines! Calls are published on strict calendars.</li>
+            <li>Proposals are written in English.</li>
+            <li>You need a strong and engaged partnership.</li>
+            <li>
+              Make sure your project meets at least one Erasmus+ priority.
+            </li>
           </ul>
         </Card.Body>
       </Card>

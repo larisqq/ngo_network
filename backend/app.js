@@ -24,9 +24,6 @@ app.use(
 // Middleware
 app.use(express.json());
 
-// Serve static files from uploads folder
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
-
 // Conectare DB
 connectDB();
 

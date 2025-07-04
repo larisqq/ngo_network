@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Form, Button, Alert, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext"; // ✅ import context
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
+
+  const { setCurrentOrg } = useAuth(); // ✅ folosim setCurrentOrg
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,20 +26,30 @@ const LoginPage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // ✅ important pentru cookie-uri
+        credentials: "include", // ✅ trimite cookie
         body: JSON.stringify(formData),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Login failed");
 
-      // ✅ Nu mai salvăm tokenul în localStorage
-      localStorage.setItem("orgLogo", data.logo);
-      localStorage.setItem("orgName", data.name);
-      localStorage.setItem("orgId", data.id);
+      // ✅ actualizăm contextul cu datele primite
+      setCurrentOrg({
+        _id: data.id,
+        name: data.name,
+        logo: data.logo,
+        baseCountry: data.baseCountry,
+        countryCode: data.countryCode || "",
+        description: data.description || "",
+        domains: data.domains || [],
+        contact: data.contact || { email: data.email }, // fallback
+        socialMedia: data.socialMedia || {},
+        coordinators: data.coordinators || [],
+        hostedProjects: data.hostedProjects || [],
+        partnerIn: data.partnerIn || [],
+      });
 
       navigate("/");
-      window.location.reload();
     } catch (err: any) {
       if (err.message === "Please verify your email first") {
         setErrorMsg(

@@ -33,7 +33,9 @@ const OrganisationCard = ({ organisation }: OrganisationCardProps) => (
         </Card.Text>
 
         <Card.Text className="text-muted small">
-          {organisation.contact?.email}
+          {organisation.socialMedia?.instagram
+            ? `Instagram: ${organisation.socialMedia.instagram}`
+            : ""}
         </Card.Text>
       </Card.Body>
     </Card>

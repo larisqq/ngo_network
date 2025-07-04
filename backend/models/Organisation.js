@@ -1,5 +1,6 @@
 //models/Organisation.js
 import mongoose from "mongoose";
+import Project from "./Project.js"; // Import Project model for reference
 
 const organisationSchema = new mongoose.Schema(
   {
@@ -37,28 +38,41 @@ const organisationSchema = new mongoose.Schema(
         "SE", // Sweden,
       ],
     },
+    countryCode: { type: String },
     description: { type: String },
     domains: [{ type: String }],
     password: { type: String, required: true },
     isVerified: { type: Boolean, default: false },
     verificationToken: { type: String },
+
     contact: {
       email: { type: String, required: true, unique: true },
       phone: { type: String },
       whatsapp: { type: String },
+      countryCode: { type: String, default: "+40" }, // ✅
+      rawPhone: { type: String }, // ✅
     },
+
     socialMedia: {
       facebook: { type: String },
-      instagram: { type: String },
+      instagram: { type: String, unique: true },
       website: { type: String },
     },
+    coordinators: [
+      // 👈 Adaugă
+      {
+        name: { type: String },
+        photo: { type: String },
+        role: { type: String },
+        email: { type: String },
+      },
+    ],
     hostedProjects: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Project",
       },
     ],
-    // ✅ Aici adaugi câmpul lipsă:
     partnerIn: [
       {
         type: mongoose.Schema.Types.ObjectId,

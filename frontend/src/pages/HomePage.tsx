@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { Project, Organisation } from "../types/models";
 import ProjectCard from "../components/ProjectCard";
 import OrganisationCard from "../components/OrganisationCard";
+import GalleryCarousel from "../components/GalleryCarousel"; // sus de tot
+
 import * as AOS from "aos";
 import "aos/dist/aos.css";
 import "../App.css";
@@ -12,6 +14,15 @@ const HomePage = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [organisations, setOrganisations] = useState<Organisation[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      const projectsRes = await fetch("http://localhost:5000/api/projects");
+      const projectsData = await projectsRes.json();
+      setProjects(projectsData);
+    };
+    fetchInitialData();
+  }, []);
 
   const images = [
     "/assets/gallery1.jpg",
@@ -29,6 +40,24 @@ const HomePage = () => {
     "/assets/gallery14.jpg",
     "/assets/gallery15.jpg",
     "/assets/gallery16.jpg",
+    "/assets/gallery17.jpg",
+    "/assets/gallery18.jpg",
+    "/assets/gallery19.jpg",
+    "/assets/gallery20.jpg",
+    "/assets/gallery21.jpg",
+    "/assets/gallery22.jpg",
+    "/assets/gallery23.jpg",
+    "/assets/gallery24.jpg",
+    "/assets/gallery25.jpg",
+    "/assets/gallery26.jpg",
+    "/assets/gallery27.jpg",
+    "/assets/gallery28.jpg",
+    "/assets/gallery29.jpg",
+    "/assets/gallery30.jpg",
+    "/assets/gallery31.jpg",
+    "/assets/gallery32.jpg",
+    "/assets/gallery33.jpg",
+    "/assets/gallery34.jpg",
   ];
 
   useEffect(() => {
@@ -56,10 +85,11 @@ const HomePage = () => {
 
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % images.length);
-    }, 5000);
+    }, 2000); // Change image every 2 seconds
 
     return () => clearInterval(interval);
   }, []);
+  const [distinctCountriesCount, setDistinctCountriesCount] = useState(0);
 
   return (
     <div className="container-fluid px-0">
@@ -95,6 +125,106 @@ const HomePage = () => {
           <Link to="/about" className="btn btn-outline-light mt-3">
             Learn About Erasmus+
           </Link>
+        </div>
+      </section>
+      {/* Impact Section */}
+      <section className="container py-5 text-center">
+        <h2 className="mb-4" data-aos="fade-up">
+          Our Impact in Numbers
+        </h2>
+        <div className="row">
+          <div className="col-md-4" data-aos="zoom-in" data-aos-delay="0">
+            <h1 className="display-4">{organisations.length}+</h1>
+            <p>NGOs</p>
+          </div>
+          <div className="col-md-4" data-aos="zoom-in" data-aos-delay="150">
+            <h1 className="display-4">31+</h1>
+            <p>Countries</p>
+          </div>
+          <div className="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+            <h1 className="display-4">{projects.length}+</h1>
+            <p>Projects Shared</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-primary text-white text-center py-5">
+        <h2 className="mb-3" data-aos="fade-up">
+          Ready to Make an Impact?
+        </h2>
+        <p className="mb-4" data-aos="fade-up" data-aos-delay="100">
+          Join the Erasmus+ NGO Network today and connect with changemakers
+          around Europe.
+        </p>
+        <Link
+          to="/signup"
+          className="btn btn-light btn-lg"
+          data-aos="fade-up"
+          data-aos-delay="200"
+        >
+          Get Started
+        </Link>
+      </section>
+
+      <section className="bg-light py-5">
+        <div className="container">
+          <h2 className="mb-4 text-center" data-aos="fade-up">
+            What Our Partners Say
+          </h2>
+          <div className="row">
+            {[
+              {
+                name: "Youth4Change",
+                text: "Collaborating via this platform made partnership building so easy and effective!",
+              },
+              {
+                name: "EcoVision NGO",
+                text: "We found 2 amazing Erasmus+ projects in less than a month. Thank you!",
+              },
+              {
+                name: "Cultural Fusion",
+                text: "Finally, a network that actually connects NGOs with shared values.",
+              },
+            ].map((t, i) => (
+              <div
+                className="col-md-4 mb-4"
+                key={i}
+                data-aos="fade-up"
+                data-aos-delay={i * 100}
+              >
+                <div className="p-4 bg-white shadow rounded">
+                  <p className="fst-italic">“{t.text}”</p>
+                  <p className="fw-bold mb-0">— {t.name}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="container py-5">
+        <h2 className="mb-4 text-center" data-aos="fade-up">
+          How It Works
+        </h2>
+        <div className="row text-center">
+          {[
+            { step: "1", title: "Create Your NGO Profile" },
+            { step: "2", title: "Explore or Post Projects" },
+            { step: "3", title: "Connect & Collaborate" },
+          ].map((item, i) => (
+            <div
+              className="col-md-4 mb-4"
+              key={i}
+              data-aos="fade-up"
+              data-aos-delay={i * 150}
+            >
+              <div className="p-4 border rounded">
+                <div className="circle bg-primary text-white mb-3">
+                  {item.step}
+                </div>
+                <h5>{item.title}</h5>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -194,28 +324,15 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
-      {/* Gallery */}
       <section className="container py-5">
-        <h2 className="mb-4" style={{ color: "#352ab9" }} data-aos="fade-up">
+        <h2
+          className="mb-4 text-center"
+          style={{ color: "#352ab9" }}
+          data-aos="fade-up"
+        >
           Gallery
         </h2>
-        <div className="row">
-          {images.map((img, index) => (
-            <div
-              className="col-md-4 mb-3"
-              key={index}
-              data-aos="zoom-in"
-              data-aos-delay={(index % 3) * 100}
-            >
-              <img
-                src={img}
-                alt={`Gallery ${index + 1}`}
-                className="img-fluid rounded shadow-sm"
-              />
-            </div>
-          ))}
-        </div>
+        <GalleryCarousel images={images} />
       </section>
     </div>
   );

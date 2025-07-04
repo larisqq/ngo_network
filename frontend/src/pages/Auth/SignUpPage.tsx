@@ -5,9 +5,10 @@ const SignUpPage = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    instagram: "",
     password: "",
     confirmPassword: "",
-    logo: "",
+    baseCountry: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -28,7 +29,6 @@ const SignUpPage = () => {
     setErrorMsg("");
     setSuccessMsg("");
 
-    // Validare parolă puternică
     if (!isStrongPassword(formData.password)) {
       setErrorMsg(
         "Password must be at least 8 characters long and include a capital letter, lowercase letter, number and symbol."
@@ -36,7 +36,6 @@ const SignUpPage = () => {
       return;
     }
 
-    // Verificare confirmare parolă
     if (formData.password !== formData.confirmPassword) {
       setErrorMsg("Passwords do not match.");
       return;
@@ -51,8 +50,9 @@ const SignUpPage = () => {
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
+          instagram: formData.instagram || formData.email, // fallback logic
           password: formData.password,
-          logo: formData.logo,
+          baseCountry: formData.baseCountry,
         }),
       });
 
@@ -66,9 +66,10 @@ const SignUpPage = () => {
       setFormData({
         name: "",
         email: "",
+        instagram: "",
         password: "",
         confirmPassword: "",
-        logo: "",
+        baseCountry: "",
       });
     } catch (err: any) {
       setErrorMsg(err.message || "Something went wrong.");
@@ -105,6 +106,31 @@ const SignUpPage = () => {
             onChange={handleChange}
             required
             isInvalid={errorMsg.toLowerCase().includes("email")}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Instagram Handle (optional)</Form.Label>
+          <Form.Control
+            type="text"
+            name="instagram"
+            placeholder="e.g. @yourngo"
+            value={formData.instagram}
+            onChange={handleChange}
+            isInvalid={errorMsg.toLowerCase().includes("instagram")}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Country Code</Form.Label>
+          <Form.Control
+            type="text"
+            name="baseCountry"
+            placeholder="e.g. RO, IT, DE"
+            value={formData.baseCountry}
+            onChange={handleChange}
+            required
+            isInvalid={errorMsg.toUpperCase().includes("COUNTRY")}
           />
         </Form.Group>
 

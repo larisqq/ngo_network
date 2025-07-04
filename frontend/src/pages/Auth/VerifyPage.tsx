@@ -19,7 +19,6 @@ const VerifyPage = () => {
     phone: "",
     website: "",
     facebook: "",
-    instagram: "",
   });
 
   useEffect(() => {
@@ -91,7 +90,6 @@ const VerifyPage = () => {
         socialMedia: {
           website: formData.website || null,
           facebook: formData.facebook || null,
-          instagram: formData.instagram,
         },
         logo: logoUrl,
       };
@@ -190,16 +188,6 @@ const VerifyPage = () => {
             name="facebook"
             value={formData.facebook}
             onChange={handleChange}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label>Instagram</Form.Label>
-          <Form.Control
-            name="instagram"
-            value={formData.instagram}
-            onChange={handleChange}
-            required
           />
         </Form.Group>
 

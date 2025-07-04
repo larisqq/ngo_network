@@ -1,9 +1,15 @@
 import { useState, useEffect } from "react";
 import { Form, Button, Alert, Spinner } from "react-bootstrap";
+import { Project } from "@/types/models";
 
 interface Partner {
   instagram: string;
-  country: string;
+  baseCountry: string;
+  name?: string;
+}
+
+interface ProjectProps {
+  instagram: string;
 }
 
 const AddProjectPage = () => {
@@ -19,6 +25,7 @@ const AddProjectPage = () => {
     applyUrl: "",
     host: "",
     objectives: [""],
+    location: "",
     partners: [] as Partner[],
     period: {
       start: "",
@@ -85,7 +92,7 @@ const AddProjectPage = () => {
   const addPartner = () => {
     setFormData((prev) => ({
       ...prev,
-      partners: [...prev.partners, { instagram: "", country: "" }],
+      partners: [...prev.partners, { instagram: "", baseCountry: "" }],
     }));
   };
 
@@ -141,6 +148,7 @@ const AddProjectPage = () => {
         targetAudience: "",
         applyUrl: "",
         host: formData.host,
+        location: "",
         objectives: [""],
         partners: [],
         period: {
@@ -189,6 +197,14 @@ const AddProjectPage = () => {
             value={formData.description}
             onChange={handleChange}
             required
+          />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Location</Form.Label>
+          <Form.Control
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
           />
         </Form.Group>
 
@@ -327,23 +343,32 @@ const AddProjectPage = () => {
 
         {/* Partners */}
         <Form.Group className="mb-3">
-          <Form.Label>Partners</Form.Label>
+          <Form.Label>Partners </Form.Label>
           {formData.partners.map((partner, index) => (
-            <div key={index} className="border p-3 mb-2 rounded">
+            <div key={index} className="mb-2 d-flex gap-2 align-items-center">
               <Form.Control
-                placeholder="Instagram (required)"
+                type="text"
+                placeholder="Partner Name (optional)"
+                value={partner.name || ""}
+                onChange={(e) => updatePartner(index, "name", e.target.value)}
+                className="me-2"
+              />
+              <Form.Control
+                type="text"
+                placeholder="Instagram"
                 value={partner.instagram}
                 onChange={(e) =>
                   updatePartner(index, "instagram", e.target.value)
                 }
-                className="mb-2"
+                className="me-2"
                 required
               />
               <Form.Control
-                placeholder="Country (e.g. RO, FR, DE)"
-                value={partner.country}
+                type="text"
+                placeholder="Base Country"
+                value={partner.baseCountry}
                 onChange={(e) =>
-                  updatePartner(index, "country", e.target.value)
+                  updatePartner(index, "baseCountry", e.target.value)
                 }
                 required
               />

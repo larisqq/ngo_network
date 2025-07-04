@@ -1,82 +1,53 @@
-// models/Project.js
 import mongoose from "mongoose";
+
+const partnerSchema = new mongoose.Schema(
+  {
+    baseCountry: {
+      type: String,
+      required: true,
+    },
+    instagram: String, // doar pt ONG neînregistrat sau înregistrat
+    name: String, // doar pt ONG neînregistrat
+    organisationRef: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organisation", // doar pt ONG înregistrat
+    },
+  },
+  { _id: false }
+);
 
 const projectSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    country: {
+    name: {
       type: String,
-      enum: [
-        "AT", // Austria
-        "BE", // Belgium
-        "BG", // Bulgaria
-        "HR", // Croatia
-        "CY", // Cyprus
-        "CZ", // Czechia
-        "DK", // Denmark
-        "EE", // Estonia
-        "FI", // Finland
-        "FR", // France
-        "DE", // Germany
-        "GR", // Greece
-        "HU", // Hungary
-        "IE", // Ireland
-        "IT", // Italy
-        "LV", // Latvia
-        "LT", // Lithuania
-        "LU", // Luxembourg
-        "MT", // Malta
-        "NL", // Netherlands
-        "PL", // Poland
-        "PT", // Portugal
-        "RO", // Romania
-        "SK", // Slovakia
-        "SI", // Slovenia
-        "ES", // Spain
-        "SE", // Sweden
-      ],
+      required: true,
     },
     description: String,
-    objectives: [{ type: String }],
-    domain: {
-      type: String,
-      enum: [
-        "education",
-        "well-being",
-        "youth",
-        "sports",
-        "culture",
-        "digital",
-        "environment",
-      ],
-    },
     period: {
-      start: { type: Date, required: true },
-      end: { type: Date, required: true },
+      start: { type: String, required: true },
+      end: { type: String, required: true },
     },
-    deadline: Date,
+    deadline: String,
+    country: String,
+    domain: [String],
+    location: String,
     infoPackUrl: String,
     coverImageUrl: String,
     targetAudience: String,
     applyUrl: String,
+    objectives: [String],
+
     host: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Organisation",
       required: true,
     },
-    partners: [
-      {
-        instagram: { type: String, required: true },
-        country: { type: String, required: true },
-        organisationRef: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Organisation",
-          default: null, // va fi completat doar dacă există ONG-ul
-        },
-      },
-    ],
+
+    partners: [partnerSchema],
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Project", projectSchema);
+const Project = mongoose.model("Project", projectSchema);
+
+export default Project;

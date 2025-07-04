@@ -12,9 +12,9 @@ const Footer = () => {
         <Row className="mb-4">
           <Col md={4} className="text-center text-md-start">
             <img
-              src="/cv2.png"
+              src="/ngo.png"
               alt="NGO Logo"
-              style={{ width: "80px", borderRadius: "50%" }}
+              style={{ width: "100px", borderRadius: "50%" }}
               className="mb-2"
             />
             <h5 className="fw-bold">NGO Network</h5>
