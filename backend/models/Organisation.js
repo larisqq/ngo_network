@@ -49,8 +49,8 @@ const organisationSchema = new mongoose.Schema(
       email: { type: String, required: true, unique: true },
       phone: { type: String },
       whatsapp: { type: String },
-      countryCode: { type: String, default: "+40" }, // ✅
-      rawPhone: { type: String }, // ✅
+      countryCode: { type: String, default: "+40" },
+      rawPhone: { type: String },
     },
 
     socialMedia: {
@@ -59,7 +59,6 @@ const organisationSchema = new mongoose.Schema(
       website: { type: String },
     },
     coordinators: [
-      // 👈 Adaugă
       {
         name: { type: String },
         photo: { type: String },

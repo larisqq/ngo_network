@@ -91,12 +91,14 @@ const EditProfilePage = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
+      setLoading(true);
       try {
         const res = await fetch("http://localhost:5000/api/organisations/me", {
           credentials: "include",
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to load profile");
+
         setFormData(data);
         setCurrentOrg(data); // actualizezi contextul
       } catch (err: any) {
@@ -106,13 +108,8 @@ const EditProfilePage = () => {
       }
     };
 
-    if (currentOrg) {
-      setFormData(currentOrg);
-      setLoading(false);
-    } else {
-      fetchProfile();
-    }
-  }, [currentOrg, setCurrentOrg]);
+    fetchProfile(); // apelezi mereu, nu doar dacă currentOrg e null
+  }, [setCurrentOrg]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -182,6 +179,11 @@ const EditProfilePage = () => {
       setSuccess("Profile updated successfully!");
       setFormData((prev) => ({ ...prev, logo: logoUrl }));
       setLogoFile(null);
+
+      // ✅ Redirecționează către pagina de profil după 2 secunde
+      setTimeout(() => {
+        navigate(`/organisations/${formData._id}`);
+      }, 1300);
     } catch (err: any) {
       setError(err.message);
     } finally {

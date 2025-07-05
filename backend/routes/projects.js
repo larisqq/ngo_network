@@ -7,26 +7,35 @@ import bcrypt from "bcrypt";
 const router = express.Router();
 
 // 🔧 Helper pentru normalizarea partenerilor
-const normalizePartners = (partners = []) => {
-  return partners.map((p) => {
-    if (p.organisationRef) {
-      return {
-        organisationRef: p.organisationRef,
-        baseCountry: p.baseCountry,
+// Înlocuiește normalizarea cu această versiune:
+const normalizePartnersWithRefs = async (partners = []) => {
+  const normalized = [];
+
+  for (const p of partners) {
+    // Caută ONG-ul existent după Instagram (dacă are)
+    let organisation = null;
+    if (p.instagram) {
+      organisation = await Organisation.findOne({
+        "socialMedia.instagram": p.instagram,
+      });
+    }
+
+    if (organisation) {
+      normalized.push({
+        organisationRef: organisation._id,
         instagram: p.instagram,
-      };
-    } else if (p.name && p.instagram) {
-      return {
+        baseCountry: p.baseCountry,
+      });
+    } else {
+      normalized.push({
         name: p.name,
         instagram: p.instagram,
         baseCountry: p.baseCountry,
-      };
-    } else {
-      return {
-        baseCountry: p.baseCountry,
-      };
+      });
     }
-  });
+  }
+
+  return normalized;
 };
 
 // ✅ GET /api/projects - toate proiectele
@@ -84,7 +93,7 @@ router.post("/", async (req, res) => {
       partners,
     } = req.body;
 
-    const normalizedPartners = normalizePartners(partners);
+    const normalizedPartners = await normalizePartnersWithRefs(partners);
 
     const newProject = new Project({
       name,
@@ -162,7 +171,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
       partners,
     } = req.body;
 
-    const normalizedPartners = normalizePartners(partners);
+    const normalizedPartners = await normalizePartnersWithRefs(partners);
 
     // 🔄 Update câmpuri
     project.name = name ?? project.name;
