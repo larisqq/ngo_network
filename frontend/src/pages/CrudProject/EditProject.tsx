@@ -5,7 +5,7 @@ import { Form, Button, Spinner, Alert } from "react-bootstrap";
 interface Partner {
   instagram: string;
   baseCountry: string;
-  name?: string;
+  name: string;
 }
 
 const EditProjectPage = () => {
@@ -46,8 +46,12 @@ const EditProjectPage = () => {
           name: data.name || "",
           description: data.description || "",
           period: {
-            start: data.period?.start?.slice(0, 10) || "",
-            end: data.period?.end?.slice(0, 10) || "",
+            start: data.period?.start
+              ? new Date(data.period.start).toISOString().slice(0, 10)
+              : "",
+            end: data.period?.end
+              ? new Date(data.period.end).toISOString().slice(0, 10)
+              : "",
           },
           deadline: data.deadline?.slice(0, 10) || "",
           country: data.country || "RO",
@@ -367,6 +371,7 @@ const EditProjectPage = () => {
             </div>
           )}
         </Form.Group>
+
         <div className="text-center mt-4">
           <Button type="submit" variant="success" className="px-4">
             {loading ? (

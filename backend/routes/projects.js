@@ -6,7 +6,6 @@ import bcrypt from "bcrypt";
 
 const router = express.Router();
 
-// 🔧 Helper pentru normalizarea partenerilor
 // Înlocuiește normalizarea cu această versiune:
 const normalizePartnersWithRefs = async (partners = []) => {
   const normalized = [];
@@ -38,7 +37,7 @@ const normalizePartnersWithRefs = async (partners = []) => {
   return normalized;
 };
 
-// ✅ GET /api/projects - toate proiectele
+// GET /api/projects - toate proiectele
 router.get("/", async (req, res) => {
   try {
     const projects = await Project.find()
@@ -52,7 +51,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✅ GET /api/projects/:id - detalii pentru un proiect
+// GET /api/projects/:id - detalii pentru un proiect
 router.get("/:id", async (req, res) => {
   try {
     const project = await Project.findById(req.params.id)
@@ -73,7 +72,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// ✅ POST /api/projects - crează proiect nou
+// POST /api/projects - crează proiect nou
 router.post("/", async (req, res) => {
   try {
     const {
@@ -117,14 +116,14 @@ router.post("/", async (req, res) => {
 
     await newProject.save();
 
-    // 🟢 Adaugă la hostedProjects ONG-ului gazdă
+    // Adaugă la hostedProjects ONG-ului gazdă
     if (host) {
       await Organisation.findByIdAndUpdate(host, {
         $addToSet: { hostedProjects: newProject._id },
       });
     }
 
-    // 🟢 Adaugă la partnerIn pentru ONG-urile partenere înregistrate
+    // Adaugă la partnerIn pentru ONG-urile partenere înregistrate
     for (const p of normalizedPartners) {
       if (p.organisationRef) {
         await Organisation.findByIdAndUpdate(p.organisationRef, {
@@ -140,7 +139,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ✅ PUT /api/projects/:id - actualizează un proiect
+// PUT /api/projects/:id - actualizează un proiect
 router.put("/:id", authMiddleware, async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
@@ -173,7 +172,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
 
     const normalizedPartners = await normalizePartnersWithRefs(partners);
 
-    // 🔄 Update câmpuri
+    // Update câmpuri
     project.name = name ?? project.name;
     project.description = description ?? project.description;
     project.period = {
@@ -193,8 +192,6 @@ router.put("/:id", authMiddleware, async (req, res) => {
 
     await project.save();
 
-    // (opțional) poți face cleanup/actualizări pentru organizațiile partenere
-
     res.json({ message: "Project updated successfully", project });
   } catch (err) {
     console.error("Error updating project:", err.message);
@@ -202,7 +199,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
   }
 });
 
-// ✅ DELETE /api/projects/:id - șterge proiectul (doar dacă parola e corectă)
+//  DELETE /api/projects/:id - șterge proiectul (cu parolă)
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
     const projectId = req.params.id;
@@ -231,12 +228,12 @@ router.delete("/:id", authMiddleware, async (req, res) => {
 
     await Project.findByIdAndDelete(projectId);
 
-    // 🔄 Șterge proiectul din lista ONG-ului gazdă
+    // Șterge proiectul din lista ONG-ului host
     await Organisation.findByIdAndUpdate(org._id, {
       $pull: { hostedProjects: project._id },
     });
 
-    // 🔄 Șterge proiectul din listele partenerilor
+    // Șterge proiectul din listele partenerilor
     for (const partner of project.partners) {
       if (partner.organisationRef) {
         await Organisation.findByIdAndUpdate(partner.organisationRef, {

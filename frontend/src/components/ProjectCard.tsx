@@ -78,16 +78,22 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
             <div className="mt-2">
               <strong>Partners:</strong>
               {project.partners.map((partner, idx) => {
-                const partnerName =
-                  "organisationRef" in partner && partner.organisationRef
-                    ? partner.organisationRef.name
-                    : "name" in partner && partner.name
-                    ? partner.name
-                    : "Unknown Partner";
+                let partnerLabel = "Unknown Partner";
+
+                if (
+                  "organisationRef" in partner &&
+                  partner.organisationRef?.name
+                ) {
+                  partnerLabel = partner.organisationRef.name;
+                } else if ("name" in partner && partner.name) {
+                  partnerLabel = partner.name;
+                } else if ("country" in partner && partner.country) {
+                  partnerLabel = `Country: ${partner.country}`;
+                }
 
                 return (
                   <div key={idx} className="text-muted small">
-                    • {partnerName}
+                    • {partnerLabel}
                   </div>
                 );
               })}

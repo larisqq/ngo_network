@@ -492,3 +492,207 @@ body.dark-mode .alert-success {
     color: #4bbf90;
   }
 }
+
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem 1rem;
+}
+
+
+
+
+/* OrganisationProfile.css */
+/* Responsive adjustments */
+.org-details-box {
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.social-icon {
+  font-size: 2.2rem;
+  cursor: pointer;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.social-icon:hover {
+  transform: scale(1.2);
+}
+
+.social-icon.ig {
+  color: #e1306c;
+}
+.social-icon.fb {
+  color: #3b5998;
+}
+.social-icon.web {
+  color: #2b6777;
+}
+
+.project-box {
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+}
+
+.section-title {
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #2b6777;
+}
+
+.project-item {
+  border: none;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+
+.project-item:hover {
+  background-color: #f0f4f8;
+}
+/* DARK MODE styles for OrganisationProfile */
+
+body.dark-mode .org-details-box,
+body.dark-mode .project-box {
+  background-color: #232b3e;
+  color: #c8d8e4;
+  border-color: #2b6777;
+}
+
+body.dark-mode .section-title {
+  color: #6fa3ef;
+}
+
+body.dark-mode .project-item {
+  background-color: transparent;
+  border-bottom: 1px solid #2b6777;
+  color: #c8d8e4;
+}
+
+body.dark-mode .project-item:hover {
+  background-color: #2b3a55;
+}
+
+body.dark-mode .social-icon.ig {
+  color: #ff5e94;
+}
+
+body.dark-mode .social-icon.fb {
+  color: #6fa3ef;
+}
+
+body.dark-mode .social-icon.web {
+  color: #6fa3ef;
+}
+
+body.dark-mode .badge.bg-light.text-dark {
+  background-color: #2b6777 !important;
+  color: #ffffff !important;
+}
+
+
+.navbar {
+  min-height: 130px;
+  transition: background-color 0.4s ease;
+}
+
+.nav-link-custom {
+  color: #f0f4f8;
+  position: relative;
+  padding: 6px 12px;
+  transition: color 0.3s ease;
+}
+
+.nav-link-custom:hover {
+  color: #ffffff;
+}
+
+.nav-link-custom::after {
+  content: "";
+  display: block;
+  height: 2px;
+  background: transparent;
+  transition: all 0.3s ease;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.nav-link-custom:hover::after {
+  background: #c8d8e4;
+  transform: scaleX(1);
+}
+
+.active-link {
+  color: #ffffff !important;
+  font-weight: bold;
+}
+
+.active-link::after {
+  background: #ffffff;
+  transform: scaleX(1.1);
+}
+body.dark-mode .nav-link-custom {
+  color: #c8d8e4;
+}
+
+body.dark-mode .nav-link-custom:hover {
+  color: #ffffff;
+}
+
+body.dark-mode .active-link {
+  color: #ffffff;
+}
+
+body.dark-mode .active-link::after {
+  background: #5081cc;
+}
+.navbar-brand:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+/* Custom Dropdown Styles */
+
+.custom-dropdown-item {
+  font-weight: 500;
+  color: #2b6777;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.custom-dropdown-item:hover {
+  background-color: #f0f4f8;
+  color: #5e52e0;
+}
+
+body.dark-mode .custom-dropdown-item {
+  color: #c8d8e4;
+}
+
+body.dark-mode .custom-dropdown-item:hover {
+  background-color: #2b3a55;
+  color: #6fa3ef;
+}

@@ -150,7 +150,7 @@ router.put("/update", authMiddleware, async (req, res) => {
   }
 });
 
-// 🧨 DELETE /api/organisations/:id - ștergere cont ONG (cu parolă)
+// DELETE /api/organisations/:id - ștergere cont ONG (cu parolă)
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
     const orgId = req.params.id;
@@ -168,10 +168,10 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     const isMatch = await bcrypt.compare(password, org.password);
     if (!isMatch) return res.status(403).json({ error: "Incorrect password" });
 
-    // 🧹 Opțional: șterge proiectele gazdă (sau marchează-le ca inactive)
+    // șterge proiectele gazdă (sau marchează-le ca inactive)
     await Project.deleteMany({ host: orgId });
 
-    // 🧹 Șterge din proiectele partener unde apare
+    // Șterge din proiectele partener unde apare
     await Project.updateMany(
       { "partners.organisationRef": orgId },
       { $pull: { partners: { organisationRef: orgId } } }

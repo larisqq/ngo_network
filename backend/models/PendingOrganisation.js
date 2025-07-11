@@ -11,7 +11,7 @@ const pendingOrganisationSchema = new mongoose.Schema(
     verificationToken: { type: String, required: true },
 
     socialMedia: {
-      instagram: { type: String, unique: true, sparse: true },
+      instagram: { type: String, unique: true, sparse: true }, // optional, only for unregistered NGOs
     },
   },
   { timestamps: true }

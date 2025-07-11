@@ -1,14 +1,8 @@
+// OrganisationProfile.tsx
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {
-  Spinner,
-  Alert,
-  Badge,
-  ListGroup,
-  Card,
-  Button,
-} from "react-bootstrap";
+import { Spinner, Alert, ListGroup, Button } from "react-bootstrap";
 import { BsInstagram, BsFacebook, BsGlobe } from "react-icons/bs";
 import { useAuth } from "../context/AuthContext";
 import DeleteModal from "@/components/DeleteModal";
@@ -82,79 +76,71 @@ const OrganisationProfile = () => {
 
   return (
     <div className="container py-5">
-      {/* Card cu detalii ONG */}
-      <Card className="mb-4 p-3">
-        <div className="d-flex align-items-start">
+      {/* Descriere ONG + Logo */}
+      <div className="org-details-box mb-4 p-4">
+        <div className="d-flex align-items-start gap-4 flex-wrap">
           {org.logo && (
             <img
               src={org.logo}
               alt={`${org.name} logo`}
-              className="img-fluid me-3"
+              className="img-fluid"
               style={{ maxWidth: "120px", borderRadius: "0.5rem" }}
             />
           )}
           <div>
             <h2 className="h5">{org.name}</h2>
             <p>{org.description}</p>
-
-            <div className="mb-3">
+            <div className="mb-2">
               {org.domains.map((domain) => (
-                <Badge key={domain} bg="primary" className="me-1">
+                <span key={domain} className="badge bg-primary me-1">
                   {domain}
-                </Badge>
+                </span>
               ))}
-            </div>
-
-            <div className="d-flex gap-2 flex-wrap">
-              {org.socialMedia?.instagram && (
-                <a
-                  href={`https://instagram.com/${org.socialMedia.instagram.replace(
-                    "@",
-                    ""
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-outline-danger btn-sm d-flex align-items-center"
-                >
-                  <BsInstagram className="me-1" />
-                  Instagram
-                </a>
-              )}
-              {org.socialMedia?.facebook && (
-                <a
-                  href={`https://facebook.com/${org.socialMedia.facebook.replace(
-                    "@",
-                    ""
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-outline-primary btn-sm d-flex align-items-center"
-                >
-                  <BsFacebook className="me-1" />
-                  Facebook
-                </a>
-              )}
-              {org.socialMedia?.website && (
-                <a
-                  href={org.socialMedia.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-outline-secondary btn-sm d-flex align-items-center"
-                >
-                  <BsGlobe className="me-1" />
-                  Website
-                </a>
-              )}
             </div>
           </div>
         </div>
-      </Card>
+      </div>
 
-      {/* Proiecte gazduite */}
-      <Card className="mb-4">
-        <Card.Header className="bg-primary text-white">
-          Projects Organised by This NGO
-        </Card.Header>
+      {/* Social Media */}
+      <div className="social-icons text-center mb-5">
+        {org.socialMedia?.instagram && (
+          <a
+            href={`https://instagram.com/${org.socialMedia.instagram.replace(
+              "@",
+              ""
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <BsInstagram className="social-icon ig" />
+          </a>
+        )}
+        {org.socialMedia?.facebook && (
+          <a
+            href={`https://facebook.com/${org.socialMedia.facebook.replace(
+              "@",
+              ""
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <BsFacebook className="social-icon fb" />
+          </a>
+        )}
+        {org.socialMedia?.website && (
+          <a
+            href={org.socialMedia.website}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <BsGlobe className="social-icon web" />
+          </a>
+        )}
+      </div>
+
+      {/* Proiecte Gazduite */}
+      <div className="project-box mb-4">
+        <h5 className="section-title">Projects Organised</h5>
         <ListGroup variant="flush">
           {(org.hostedProjects ?? []).length > 0 ? (
             org.hostedProjects!.map((project: any) => (
@@ -163,22 +149,17 @@ const OrganisationProfile = () => {
                 as={Link}
                 to={`/projects/${project._id}`}
                 action
+                className="project-item"
               >
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <strong>{project.name}</strong>
-                    {project.baseCountry && (
-                      <span className="ms-2 badge bg-light text-dark">
-                        {project.baseCountry}
-                      </span>
-                    )}
-                  </div>
-                  <small className="text-muted">
-                    Deadline:{" "}
-                    {project.deadline
-                      ? new Date(project.deadline).toLocaleDateString()
-                      : "—"}
-                  </small>
+                <strong>{project.name}</strong>{" "}
+                <span className="badge bg-light text-dark ms-2">
+                  {project.baseCountry}
+                </span>
+                <div className="small text-muted mt-1">
+                  Deadline:{" "}
+                  {project.deadline
+                    ? new Date(project.deadline).toLocaleDateString()
+                    : "—"}
                 </div>
               </ListGroup.Item>
             ))
@@ -188,13 +169,11 @@ const OrganisationProfile = () => {
             </ListGroup.Item>
           )}
         </ListGroup>
-      </Card>
+      </div>
 
-      {/* Proiecte parteneriate */}
-      <Card className="mb-4">
-        <Card.Header className="bg-secondary text-white">
-          Projects Where This NGO is a Partner
-        </Card.Header>
+      {/* Proiecte Parteneriate */}
+      <div className="project-box mb-4">
+        <h5 className="section-title">Projects as Partner</h5>
         <ListGroup variant="flush">
           {(org.partnerIn ?? []).length > 0 ? (
             org.partnerIn!.map((project: any) => (
@@ -203,22 +182,17 @@ const OrganisationProfile = () => {
                 as={Link}
                 to={`/projects/${project._id}`}
                 action
+                className="project-item"
               >
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <strong>{project.name}</strong>
-                    {project.baseCountry && (
-                      <span className="ms-2 badge bg-light text-dark">
-                        {project.baseCountry}
-                      </span>
-                    )}
-                  </div>
-                  <small className="text-muted">
-                    Deadline:{" "}
-                    {project.deadline
-                      ? new Date(project.deadline).toLocaleDateString()
-                      : "—"}
-                  </small>
+                <strong>{project.name}</strong>{" "}
+                <span className="badge bg-light text-dark ms-2">
+                  {project.baseCountry}
+                </span>
+                <div className="small text-muted mt-1">
+                  Deadline:{" "}
+                  {project.deadline
+                    ? new Date(project.deadline).toLocaleDateString()
+                    : "—"}
                 </div>
               </ListGroup.Item>
             ))
@@ -228,9 +202,9 @@ const OrganisationProfile = () => {
             </ListGroup.Item>
           )}
         </ListGroup>
-      </Card>
+      </div>
 
-      {/* Buton ștergere - doar dacă e profilul propriu */}
+      {/* Delete profile button */}
       {currentOrg?._id === org._id && (
         <div className="text-center mt-4">
           <Button

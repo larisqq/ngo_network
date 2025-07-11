@@ -18,7 +18,7 @@ const AddProjectPage = () => {
     description: "",
     deadline: "",
     country: "RO",
-    domain: "education",
+    domain: [] as string[],
     infoPackUrl: "",
     coverImageUrl: "",
     targetAudience: "",
@@ -38,6 +38,35 @@ const AddProjectPage = () => {
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [partnerType, setPartnerType] = useState<"country" | "organisation">(
+    "organisation"
+  );
+
+  const DOMAIN_OPTIONS = [
+    "education ",
+    "Environment & sustainability",
+    "Well-being & mental health ",
+    "digital & innovation",
+    "youth ",
+    "Inclusion & social integration",
+    "health and fitness ",
+    "entrepreneurship ",
+    "mobility ",
+    "community development ",
+    "training course",
+    "yputh exchange",
+  ];
+  const toggleDomain = (domain: string) => {
+    setFormData((prev) => {
+      const isSelected = prev.domain.includes(domain);
+      return {
+        ...prev,
+        domain: isSelected
+          ? prev.domain.filter((d) => d !== domain)
+          : [...prev.domain, domain],
+      };
+    });
+  };
 
   const uploadCoverImage = async (file: File): Promise<string> => {
     const form = new FormData();
@@ -77,6 +106,14 @@ const AddProjectPage = () => {
     >
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleDomainChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selected = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
+    setFormData((prev) => ({ ...prev, domain: selected }));
   };
 
   const handleObjectiveChange = (idx: number, value: string) => {
@@ -142,7 +179,7 @@ const AddProjectPage = () => {
         description: "",
         deadline: "",
         country: "RO",
-        domain: "education",
+        domain: [],
         infoPackUrl: "",
         coverImageUrl: "",
         targetAudience: "",
@@ -316,53 +353,88 @@ const AddProjectPage = () => {
             <option value="DE">Germany</option>
             <option value="ES">Spain</option>
             <option value="IT">Italy</option>
+            <option value="PT">Portugal</option>
+            <option value="GR">Greece</option>
+            <option value="BG">Bulgaria</option>
+            <option value="PL">Poland</option>
+            <option value="HU">Hungary</option>
+            <option value="CZ">Czech Republic</option>
+            <option value="SK">Slovakia</option>
+            <option value="AT">Austria</option>
+            <option value="NL">Netherlands</option>
+            <option value="BE">Belgium</option>
+            <option value="SE">Sweden</option>
+            <option value="DK">Denmark</option>
+            <option value="FI">Finland</option>
+            <option value="NO">Norway</option>
           </Form.Select>
         </Form.Group>
 
         {/* Domain */}
         <Form.Group className="mb-3">
-          <Form.Label>Domain</Form.Label>
-          <Form.Select
-            name="domain"
-            value={formData.domain}
-            onChange={handleChange}
-            required
-          >
-            <option value="education">Education</option>
-            <option value="environment">Environment</option>
-            <option value="well-being">Well-being</option>
-            <option value="digital">Digital</option>
-            <option value="culture">Culture</option>
-            <option value="youth">Youth</option>
-            <option value="inclusion">Inclusion</option>
-            <option value="sports">Sports</option>
-            <option value="health">Health</option>
-            <option value="social">Social</option>
-          </Form.Select>
+          <Form.Label>Domains</Form.Label>
+          <div className="d-flex flex-wrap gap-2">
+            {DOMAIN_OPTIONS.map((domain) => {
+              const isSelected = formData.domain.includes(domain);
+              return (
+                <Button
+                  key={domain}
+                  variant={isSelected ? "primary" : "outline-primary"}
+                  onClick={() => toggleDomain(domain)}
+                  size="sm"
+                  className="rounded-pill"
+                >
+                  {domain}
+                </Button>
+              );
+            })}
+          </div>
         </Form.Group>
 
         {/* Partners */}
         <Form.Group className="mb-3">
-          <Form.Label>Partners </Form.Label>
+          <Form.Label>Type of Partners</Form.Label>
+          <Form.Select
+            value={partnerType}
+            onChange={(e) =>
+              setPartnerType(e.target.value as "country" | "organisation")
+            }
+          >
+            <option value="organisation">Partner Organisations</option>
+            <option value="country">Partner Countries</option>
+          </Form.Select>
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Partners</Form.Label>
+
           {formData.partners.map((partner, index) => (
-            <div key={index} className="mb-2 d-flex gap-2 align-items-center">
-              <Form.Control
-                type="text"
-                placeholder="Partner Name (optional)"
-                value={partner.name || ""}
-                onChange={(e) => updatePartner(index, "name", e.target.value)}
-                className="me-2"
-              />
-              <Form.Control
-                type="text"
-                placeholder="Instagram"
-                value={partner.instagram}
-                onChange={(e) =>
-                  updatePartner(index, "instagram", e.target.value)
-                }
-                className="me-2"
-                required
-              />
+            <div
+              key={index}
+              className="mb-2 d-flex gap-2 align-items-center flex-wrap"
+            >
+              {partnerType === "organisation" && (
+                <>
+                  <Form.Control
+                    type="text"
+                    placeholder="Partner Name (optional)"
+                    value={partner.name || ""}
+                    onChange={(e) =>
+                      updatePartner(index, "name", e.target.value)
+                    }
+                    className="me-2"
+                  />
+                  <Form.Control
+                    type="text"
+                    placeholder="Instagram"
+                    value={partner.instagram}
+                    onChange={(e) =>
+                      updatePartner(index, "instagram", e.target.value)
+                    }
+                    className="me-2"
+                  />
+                </>
+              )}
               <Form.Control
                 type="text"
                 placeholder="Base Country"
@@ -374,6 +446,7 @@ const AddProjectPage = () => {
               />
             </div>
           ))}
+
           <Button variant="secondary" onClick={addPartner} type="button">
             + Add Partner
           </Button>

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
@@ -9,6 +9,8 @@ const Navbar = () => {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") === "true";
   });
+  const location = useLocation();
+  const isActive = (path: string) => location.pathname === path;
 
   useEffect(() => {
     document.body.classList.toggle("dark-mode", darkMode);
@@ -46,31 +48,51 @@ const Navbar = () => {
           <span className="fw-bold text-light">NGO Network</span>
         </Link>
 
-        {/* 🧭 Center: Navigation Links */}
-        <ul className="nav gap-3 mx-auto">
+        {/* Center: Navigation Links */}
+        <ul className="nav gap-4 mx-auto align-items-center">
           <li className="nav-item">
-            <Link className="nav-link text-light fw-medium" to="/">
+            <Link
+              className={`nav-link fw-semibold nav-link-custom ${
+                isActive("/") ? "active-link" : ""
+              }`}
+              to="/"
+            >
               Home
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link text-light fw-medium" to="/projects">
+            <Link
+              className={`nav-link fw-semibold nav-link-custom ${
+                isActive("/projects") ? "active-link" : ""
+              }`}
+              to="/projects"
+            >
               Opportunities
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link text-light fw-medium" to="/organisations">
+            <Link
+              className={`nav-link fw-semibold nav-link-custom ${
+                isActive("/organisations") ? "active-link" : ""
+              }`}
+              to="/organisations"
+            >
               Organisations
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link text-light fw-medium" to="/about">
+            <Link
+              className={`nav-link fw-semibold nav-link-custom ${
+                isActive("/about") ? "active-link" : ""
+              }`}
+              to="/about"
+            >
               About Erasmus+
             </Link>
           </li>
         </ul>
 
-        {/* 🌙 Dark Mode Toggle */}
+        {/* Dark Mode Toggle */}
         <button
           className={`btn btn-sm ${darkMode ? "btn-light" : "btn-dark"} me-2`}
           onClick={() => setDarkMode((prev) => !prev)}
@@ -79,13 +101,14 @@ const Navbar = () => {
           <i className={`bi ${darkMode ? "bi-sun" : "bi-moon"}`}></i>
         </button>
 
-        {/* 🧾 Right: Auth Section */}
+        {/* Right: Auth Section */}
         {!currentOrg ? (
           <div className="d-flex gap-2">
-            <Link to="/signup" className="btn btn-outline-light btn-sm">
+            <Link to="/signup" className="btn-custom-outline me-2">
               <i className="bi bi-person-plus me-1"></i> Sign Up
             </Link>
-            <Link to="/login" className="btn btn-outline-light btn-sm">
+
+            <Link to="/login" className="btn-custom-outline">
               <i className="bi bi-box-arrow-in-right me-1"></i> Login
             </Link>
           </div>

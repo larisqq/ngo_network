@@ -1,6 +1,5 @@
 //models/Organisation.js
 import mongoose from "mongoose";
-import Project from "./Project.js"; // Import Project model for reference
 
 const organisationSchema = new mongoose.Schema(
   {
@@ -12,31 +11,38 @@ const organisationSchema = new mongoose.Schema(
         "AT", // Austria
         "BE", // Belgium
         "BG", // Bulgaria
-        "HR", // Croatia
         "CY", // Cyprus
-        "CZ", // Czechia
+        "CZ", // Czech Republic
+        "DE", // Germany
         "DK", // Denmark
         "EE", // Estonia
         "FI", // Finland
         "FR", // France
-        "DE", // Germany
+        "GB", // United Kingdom
         "GR", // Greece
+        "HR", // Croatia
         "HU", // Hungary
         "IE", // Ireland
+        "IS", // Iceland
         "IT", // Italy
-        "LV", // Latvia
+        "LI", // Liechtenstein
         "LT", // Lithuania
         "LU", // Luxembourg
+        "MK", // North Macedonia
         "MT", // Malta
         "NL", // Netherlands
+        "NO", // Norway
         "PL", // Poland
         "PT", // Portugal
         "RO", // Romania
-        "SK", // Slovakia
+        "RS", // Serbia
+        "SE", // Sweden
         "SI", // Slovenia
+        "SK", // Slovakia
         "ES", // Spain
-        "SE", // Sweden,
+        "TR", // Turkey
       ],
+      required: true,
     },
     countryCode: { type: String },
     description: { type: String },

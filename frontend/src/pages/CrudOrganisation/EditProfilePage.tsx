@@ -20,7 +20,7 @@ const EditProfilePage = () => {
       email: "",
       phone: "",
       whatsapp: "",
-      countryCode: "+40",
+      countryCode: "",
       rawPhone: "",
     },
     socialMedia: {
@@ -41,7 +41,6 @@ const EditProfilePage = () => {
 
   const navigate = useNavigate();
 
-  // Listă simplă de țări cu prefixe
   const europeanCountries = [
     { name: "Romania", code: "+40" },
     { name: "Germany", code: "+49" },
@@ -65,10 +64,7 @@ const EditProfilePage = () => {
     { name: "Netherlands", code: "+31" },
     { name: "Belgium", code: "+32" },
     { name: "Ireland", code: "+353" },
-    {
-      name: "United Kingdom",
-      code: "+44",
-    },
+
     { name: "Switzerland", code: "+41" },
     { name: "Iceland", code: "+354" },
     { name: "Luxembourg", code: "+352" },
@@ -84,7 +80,6 @@ const EditProfilePage = () => {
     { name: "Moldova", code: "+373" },
     { name: "Ukraine", code: "+380" },
     { name: "Belarus", code: "+375" },
-    { name: "Russia", code: "+7" },
 
     // adaugă câte vrei
   ];

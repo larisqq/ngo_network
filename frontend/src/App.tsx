@@ -32,25 +32,32 @@ function App() {
 
   return (
     <Router>
-      <Navbar />
-      <div className="container my-5">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/organisations" element={<OrganisationsPage />} />
-          <Route path="/organisations/:id" element={<OrganisationProfile />} />
-          <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/projects/:id" element={<ProjectProfilePage />} />
-          <Route path="/add-project" element={<AddProjectPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/verify" element={<VerifyPage />} />
-          <Route path="/edit-profile" element={<EditProfile />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/projects/:id/edit" element={<EditProjectPage />} />
-        </Routes>
+      <div className="app-layout">
+        <Navbar />
+
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/organisations" element={<OrganisationsPage />} />
+            <Route
+              path="/organisations/:id"
+              element={<OrganisationProfile />}
+            />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/projects/:id" element={<ProjectProfilePage />} />
+            <Route path="/add-project" element={<AddProjectPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/verify" element={<VerifyPage />} />
+            <Route path="/edit-profile" element={<EditProfile />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/projects/:id/edit" element={<EditProjectPage />} />
+          </Routes>
+        </main>
+
+        <BackToTop />
+        <Footer />
       </div>
-      <BackToTop />
-      <Footer />
     </Router>
   );
 }
