@@ -65,4 +65,4 @@ The application follows a **client-server architecture**:
 
 ## Motivation
 
-This project was developed as my **bachelor's degree project**, combining my interests in **web development**, **international collaboration**, and building software solutions that address real-world needs.
+This project was developed combining my interests in **web development**, **international collaboration**, and building software solutions that address real-world needs.
